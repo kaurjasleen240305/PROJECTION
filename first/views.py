@@ -1,15 +1,20 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,action
 from django.shortcuts import redirect
+from django.http import Http404
 import requests
-from django.http import HttpRequest
 import os
 from dotenv import load_dotenv
-from first.models import User
+from .models import User,Project,Card_Subtask,Card,List
+from django.db.models import Prefetch
 from django.contrib.auth import login
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,logout
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
+from .serializers import ProjectModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer
+from rest_framework import viewsets,status,permissions
 
 
 load_dotenv()
@@ -17,8 +22,10 @@ load_dotenv()
 
 CLIENT_ID=os.environ.get("CLIENT_ID")
 REDIRECT_URI=os.environ.get("redirect_uri1")
+BACK_URI=os.environ.get("back_uri1")
 STRING=os.environ.get("redirect_string")
 CLIENT_SECRET_ID=os.environ.get("client_secret_id")
+
 
 @api_view(['GET'])
 def login_direct(request):
@@ -41,13 +48,16 @@ def auth(username,enrolment_number, name, year, email,is_Member ):
         user = User.objects.get(username=username)
         return user
 
+@api_view(['GET'])
+def check_login(request):
+   if "sessionid" in request.COOKIES:
+       return Response("LOGGED IN")
+   else:
+      return Response("NOT LOGGED IN")
 
 
 @api_view(['GET'])
 def get_token(request):
-   if "sessionid" in request.COOKIES:
-      print(request.session.get("is_Member"))
-      return render(request,'first/dashboard.html')
    try:
     auth_code=request.GET.get('code')
     params_post={
@@ -91,43 +101,250 @@ def get_token(request):
         request.session['enrolment_no'] = enrolment_no
         request.session['is_Member'] = is_Member
         login(request,user)
+        return Response("LOGGED IN")
       except:
          return Response("Not logged in successfully")
    ##      return Response("Not logged in successfully")
     else:
       return Response("Not an IMG member")
-    return render(request,'first/dashboard.html')
+    
    except:
       SITE = f'https://channeli.in/oauth/authorise/?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&state="Success/'
       return redirect(SITE)
-#
-# {'userId': 18355, 
-# 'username': '22112047', 
-# 'person': {'shortName': '', 
-# 'fullName': 'Jasleen Kaur', 
-# 'roles': [
-# {'role': 'Student', 'activeStatus': 'ActiveStatus.IS_ACTIVE'}, 
-# {'role': 'Maintainer', 'activeStatus': 'ActiveStatus.WILL_BE_ACTIVE'}], 
-# 'customRoles': [],
-#  'displayPicture': None}, 
-# 'student': {
-# 'startDate': '2022-10-27',
-#  'endDate': None, 
-# 'enrolmentNumber': '22112047',
-#  'branch name': 'B.Tech. (Electrical Engineering)',
-#  'branch degree name': 'B.Tech. - Bachelor of Technology', 
-# 'currentYear': 2, 
-# 'currentSemester': 3, 
-# 'branch department name': 'Electrical Engineering Department'
-# },
-#  'facultyMember': {}, 
-# 'biologicalInformation': {'dateOfBirth': '2005-03-24', 'bloodGroup': 'B+', 'sex': 'female', 'gender': 'woman'},
-#  'contactInformation': {
-# 'emailAddress': 'jasleen_k@ee.iitr.ac.in', 
-# 'emailAddressVerified': False, 
-# 'instituteWebmailAddress': 'jasleen_k@ee.iitr.ac.in',
-#  'primaryPhoneNumber': '9140835381', 
-# 'secondaryPhoneNumber': None},
-#  'residentialInformation': {'residence name': 'Sarojini bhawan', 'roomNumber': 'S-70'},
-#  'socialInformation': {}}#
+   
+
+@api_view(['POST'])
+def login_password(request):
+   username=request.data['username']
+   password=request.data['password']
+   user=authenticate(request,username=username,password=password)
+   if user is not None:
+      login(request,user)
+      request.session['username']=username
+      return Response({"message":"LOGGED IN SUCCESSFULLY"})
+   return Response({"message":"USER IS NOT AUTHENTICATED"})
+
+
+@api_view(['GET'])
+def logout_pass(request):
+   logout(request)
+   return Response({"message":"LOGGED OUT SUCCESSFULLY"}, status=status.HTTP_200_OK)
+
+
+
+###permissions
+class is_member_admin_creator(permissions.BasePermission): 
+   def has_object_permission(self,request,view,obj):
+      cond1=request.session.get("username")
+      print(cond1)
+      cond2=obj.pid.project_members.filter(username=(request.session.get("username"))).exists()
+      print(cond2)
+      cond3=obj.pid.creator==(request.session.get("username"))
+      print(cond3)
+      result=(cond1 or cond2 or cond3)
+      return False
+##TO SEE WHETHER ONE PERMSSION FOR PROEJCT,LIST,CARD CAN BE CREATED OR NOT 
+class is_member_admin_creator_card(permissions.BasePermission): 
+   def has_object_permission(self,request,view,obj):
+      cond1=request.session.get("username")
+      print(cond1)
+      cond2=obj.lid.pid.project_members.filter(username=(request.session.get("username"))).exists()
+      print(cond2)
+      cond3=obj.lid.pid.creator.username==(request.session.get("username"))
+      print(cond3)
+      result=(cond1 or cond2 or cond3)
+      return result
+   
+
+
+
+####VIEWSETS
+
+class UserViewSet(viewsets.ModelViewSet):
+     queryset=User.objects.all()
+     serializer_class=UserSerializer
+     lookup_field='username'
+
+     def list(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+     
+     
+     def detail(self, request):
+        try:
+            user =self.get_object()
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+        
+     def update(self,request,*args,**kwargs):
+        username=kwargs.get('username')
+        user=self.get_object()
+        if user.username != username:
+            return Response({'message': 'Username in URL does not match the object.'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors,status=Http404)
+
+
+
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+   queryset=Project.objects.all()
+   serializer_class=ProjectModelSerializer
+   authentication_classes=[SessionAuthentication]
+   permission_classes=[IsAuthenticated]
+   
+
+   def list(self, request, *args, **kwargs):
+      projects=Project.objects.all()
+      serializer=ProjectModelSerializer(projects,many=True)
+      return Response(serializer.data)
+   
+   def retrieve(self,request,pk):
+      try:
+         project = Project.objects.get(pk=pk)
+      except project.DoesNotExist:
+         return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+      serializer = ProjectModelSerializer(project)
+      return Response(serializer.data)
+   
+   def create(self,request,*args,**kwargs):
+      copy=request.data.copy()
+      copy["creator"]=request.session.get("username")
+      print(request.session.get("session_id"))
+      serializer=Procreser(data=copy)
+      if serializer.is_valid():
+         serializer.save()
+         return Response(serializer.data, status=status.HTTP_201_CREATED)
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+ 
+  ## TO OVERRIDE DELETE ACCORDING TO PROJECT MEMBERS ONLY AND ADMINS CAN DELETE
+
+   def destroy(self,request,*args,**kwargs):
+      ins=self.get_object()
+      cond1=request.session.get("is_superuser")
+      cond2=(ins.creator==(request.session.get("username")))
+      cond3=ins.is_member(username=request.session.get("username"))
+      if(cond1 or cond3 or cond2):
+         ins.delete()
+         return Response({"message":"PROJECT DELETED SUCCESSFULLY"})
+      return Response({"message":"YOU CANNOT DELETE THIS PROJECT"})
+   
+   @action(detail=True,methods=["POST",])
+   def add_member(self,request,*args,**kwargs):
+      project_instance=self.get_object()
+      username=request.data['username']
+      user=User.objects.get(username=username)
+      cond2=(project_instance.creator==(request.session.get("username")))
+      if(cond2):
+         project_instance.project_members.add(user)
+         return Response({"message":f'{username} added Successfully to this project'})
+      return Response({"message":"You dont have access to add member to this Project"})
+   
+   
+
+   
+class ListViewSet(viewsets.ModelViewSet):
+     queryset=List.objects.all()
+     serializer_class=ListModelSerializer
+     authentication_classes=[SessionAuthentication]
+     permission_classes=[IsAuthenticated,is_member_admin_creator]
+     #def get_permission(self):
+     #   if self.action in ['create','destroy','update']:
+     #      obj=self.get_object()
+     #      permission_classes=[is_member_admin_creator,IsAuthenticated]
+     #   else:
+     #      permission_classes=[IsAuthenticated]
+     #   return permission_classes
+     
+     def create(self,request,*args,**kwargs):
+       current_user=User.objects.get(username=(request.session.get("username")))
+       current_project=Project.objects.get(pk=(request.data['pid']))
+       cond1=current_user.is_superuser
+       cond2=current_project.project_members.filter(username=(request.session.get("username"))).exists()
+       cond3=current_project.creator==(request.session.get("username"))
+       print(request.session.get("username"))
+       result=(cond1 or cond2 or cond3)
+       if(result):
+        serializer=ListCreateSerializer(data=request.data)
+        if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+       return Response({"error":"YOU DONT HAVE ACCESS TO CREATE PROJECT"})
+     
+
+
+class CardViewSet(viewsets.ModelViewSet):
+   queryset=Card.objects.all()
+   serializer_class=CardSerializer
+   authentication_classes=[SessionAuthentication]
+   permission_classes=[IsAuthenticated,is_member_admin_creator_card]
+
+   def create(self,request,*args,**kwargs):
+       current_user=User.objects.get(username=(request.session.get("username")))
+       current_list=List.objects.get(pk=request.data['lid'])
+       current_project=Project.objects.get(pk=current_list.pid.pk)
+       cond1=current_user.is_superuser
+       cond2=current_project.project_members.filter(username=(request.session.get("username"))).exists()
+       cond3=(current_project.creator.username)==(request.session.get("username"))
+       result=(cond1 or cond2 or cond3)
+       if(result):
+          data_copy=request.data.copy()
+          data_copy["completion_status"]=0
+          serializer=Card_createSerializer(data=data_copy)
+          if serializer.is_valid():
+             serializer.save()
+             return Response(serializer.data)
+          return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
+       return Response({"message":"NO ACCESS TO ADD CARD"})
+   
+
+   
+   
+          
+
+   
+   
+     
+    
+     
+     
+
+      
+     
+     
+
+
+
+
+
+
+
+
+
+   
+   
+            
+
+
+      
+
+
+        
+        
+     
+
+     
+        
+            
+        
+
+
 
