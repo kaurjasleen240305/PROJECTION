@@ -131,6 +131,9 @@ def logout_pass(request):
    return Response({"message":"LOGGED OUT SUCCESSFULLY"}, status=status.HTTP_200_OK)
 
 
+def room(request,card_id):
+   return render(request,"first/index.html",{"card_id":card_id})
+
 
 ###permissions
 class is_member_admin_creator(permissions.BasePermission): 
