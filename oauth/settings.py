@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from elasticsearch_dsl import connections
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,7 +44,17 @@ INSTALLED_APPS = [
     'rest_framework',
     'oauth2_provider',
     'channels',
+    'django_elasticsearch_dsl',
+    'django_elasticsearch_dsl_drf',
 ]
+
+ELASTICSEARCH_DSL={
+    'default': {
+        'hosts': 'http://localhost:9200',
+        'http_auth': ('username', 'password')
+    }
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

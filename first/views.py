@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view,action
 from django.shortcuts import redirect
 from django.http import Http404
-import requests
 import os
+import requests
 from dotenv import load_dotenv
 from .models import User,Project,Card_Subtask,Card,List
 from django.db.models import Prefetch
@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 from .serializers import ProjectModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer
 from rest_framework import viewsets,status,permissions
-
 
 load_dotenv()
 
