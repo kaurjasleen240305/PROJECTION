@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'channels',
     'django_elasticsearch_dsl',
     'django_elasticsearch_dsl_drf',
+    'corsheaders',
 ]
 
 ELASTICSEARCH_DSL={
@@ -54,6 +55,10 @@ ELASTICSEARCH_DSL={
         'http_auth': ('username', 'password')
     }
 }
+
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+)
 
 
 MIDDLEWARE = [
@@ -64,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'oauth.urls'
