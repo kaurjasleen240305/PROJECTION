@@ -15,6 +15,7 @@ urlpatterns = [
     path('',include(router.urls)),
     path('',views.check_login),
     path('login',views.login_direct),
+    path("check_login",views.check_login),
     path('get_token/',views.get_token),
     path('login_password',views.login_password),
     path('logout',views.logout_pass),

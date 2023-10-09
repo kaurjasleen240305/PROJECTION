@@ -20,6 +20,6 @@ from first import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('first.urls')),
+    path('web_api/',include('first.urls')),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]

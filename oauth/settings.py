@@ -56,9 +56,13 @@ ELASTICSEARCH_DSL={
     }
 }
 
-CORS_ORIGIN_WHITELIST = (
+CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
-)
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+]
 
 
 MIDDLEWARE = [
@@ -161,6 +165,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.IsAuthenticated'
+    ]
 }
 
 MEDIA_URL='/media/'

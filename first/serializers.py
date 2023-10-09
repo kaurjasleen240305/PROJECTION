@@ -78,6 +78,12 @@ class UserSerializer(serializers.ModelSerializer):
         partial=True
 
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['username','name','year','email','enrolment_no','is_Member']
+
+
 class ProjectModelSerializer(serializers.ModelSerializer):
     lists = ListModelSerializer(many=True)
     project_members=UserSerializer(many=True)

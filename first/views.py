@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import api_view,action
+from rest_framework.decorators import api_view,action,permission_classes
 from django.shortcuts import redirect
 from django.http import Http404
 import os
@@ -11,9 +11,9 @@ from .models import User,Project,Card_Subtask,Card,List
 from django.db.models import Prefetch
 from django.contrib.auth import login
 from django.contrib.auth import authenticate,logout
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
-from .serializers import ProjectModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer
+from .serializers import ProjectModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer
 from rest_framework import viewsets,status,permissions
 
 load_dotenv()
@@ -27,9 +27,30 @@ CLIENT_SECRET_ID=os.environ.get("client_secret_id")
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def login_direct(request):
     SITE = f'https://channeli.in/oauth/authorise/?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&state="Success/'
     return redirect(SITE)
+
+
+@api_view(["GET"])
+@permission_classes([])
+def check_login(request):
+    print("Hello")
+    content={"Logged_In":False}
+    print(request.COOKIES['sessionid'])
+    if "sessionid" in request.COOKIES:
+       user_info={
+          "username":request.session.get("username"),
+          "name":request.session.get("name"),
+          "email":request.session.get("email"),
+          "is_member":request.session.get("is_member"),
+          "enrolment_no":request.session.get("enrolment_no"),
+          "year":request.session.get("year"),
+          "is_admin":request.session.get("is_superuser")
+       } 
+       content={"Logged_In":True,"user":user_info}
+    return Response(content)
 
 
 
@@ -47,15 +68,16 @@ def auth(username,enrolment_number, name, year, email,is_Member ):
         user = User.objects.get(username=username)
         return user
 
-@api_view(['GET'])
-def check_login(request):
-   if "sessionid" in request.COOKIES:
-       return Response("LOGGED IN")
-   else:
-      return Response("NOT LOGGED IN")
+# @api_view(['GET'])
+# def check_login(request):
+#    if "sessionid" in request.COOKIES:
+#        return Response("LOGGED IN")
+#    else:
+#       return Response("NOT LOGGED IN")
 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def get_token(request):
    try:
     auth_code=request.GET.get('code')
@@ -81,6 +103,7 @@ def get_token(request):
     email=user_info['contactInformation']['emailAddress']
     enrolment_no=user_info['student']['enrolmentNumber']
 
+
     is_Member=False
     for i in user_info['person']['roles']:
         if(i['role']=="Maintainer"):
@@ -99,6 +122,7 @@ def get_token(request):
         request.session['email'] = email
         request.session['enrolment_no'] = enrolment_no
         request.session['is_Member'] = is_Member
+        request.session['is_admin']=user.is_superuser
         login(request,user)
         return Response("LOGGED IN")
       except:
@@ -165,6 +189,8 @@ class is_member_admin_creator_card(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
      queryset=User.objects.all()
      serializer_class=UserSerializer
+     authentication_classes=[SessionAuthentication]
+     permission_classes=[IsAuthenticated]
      lookup_field='username'
 
      def list(self, request):
