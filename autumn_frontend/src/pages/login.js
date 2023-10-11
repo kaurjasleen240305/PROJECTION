@@ -1,9 +1,9 @@
 import React from "react";
-import {button} from "@mui/material";
+import LoginButton from "../components/login_comp/login_button";
 
 
 export default function Login(){
     return(
-        <button variant="contained">Login</button>
+        <LoginButton/>
     )
 }

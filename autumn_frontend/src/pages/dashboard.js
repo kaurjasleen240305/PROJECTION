@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import CheckLogin from "../check_login";
-import {button} from "@mui/material";
+import Button from "@mui/material/Button";
 import { useEffect } from "react";
 
 
@@ -11,7 +11,7 @@ export default function Dashboard(){
         CheckLogin(dispatch);
     },[dispatch]);
     return (
-        <button variant="container">Dashboard</button>
+        <h1>Hee</h1>
     )
 
 }

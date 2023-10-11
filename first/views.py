@@ -15,7 +15,6 @@ from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
 from .serializers import ProjectModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer
 from rest_framework import viewsets,status,permissions
-
 load_dotenv()
 
 
@@ -24,6 +23,8 @@ REDIRECT_URI=os.environ.get("redirect_uri1")
 BACK_URI=os.environ.get("back_uri1")
 STRING=os.environ.get("redirect_string")
 CLIENT_SECRET_ID=os.environ.get("client_secret_id")
+FRONTEND_HOST=os.environ.get("frontend_host")
+BACKEND_HOST=os.environ.get("BACKEND_HOST")
 
 
 @api_view(['GET'])
@@ -31,14 +32,15 @@ CLIENT_SECRET_ID=os.environ.get("client_secret_id")
 def login_direct(request):
     SITE = f'https://channeli.in/oauth/authorise/?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&state="Success/'
     return redirect(SITE)
-
+    
 
 @api_view(["GET"])
 @permission_classes([])
 def check_login(request):
     print("Hello")
     content={"Logged_In":False}
-    print(request.COOKIES['sessionid'])
+ #   print(request.COOKIES['sessionid'])
+    print(request.COOKIES)
     if "sessionid" in request.COOKIES:
        user_info={
           "username":request.session.get("username"),
@@ -116,6 +118,7 @@ def get_token(request):
       except:
          return Response("unable to create user")
       try:
+        login(request,user)
         request.session['username'] = username
         request.session['name'] = name
         request.session['year'] = year
@@ -123,8 +126,9 @@ def get_token(request):
         request.session['enrolment_no'] = enrolment_no
         request.session['is_Member'] = is_Member
         request.session['is_admin']=user.is_superuser
-        login(request,user)
-        return Response("LOGGED IN")
+        print(FRONTEND_HOST)
+        return redirect(f'{FRONTEND_HOST}dashboard')
+  #      return Response("LOGGED IN")
       except:
          return Response("Not logged in successfully")
    ##      return Response("Not logged in successfully")
