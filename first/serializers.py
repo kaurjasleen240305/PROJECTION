@@ -96,7 +96,7 @@ class ProjectModelSerializer(serializers.ModelSerializer):
 class ProjectListModelSerializer(serializers.ModelSerializer):
     class Meta:
         model=Project
-        fields=['project_name']
+        fields=['project_name','pk']
 
 
 class Procreser(serializers.ModelSerializer):

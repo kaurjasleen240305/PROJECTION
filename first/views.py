@@ -13,7 +13,7 @@ from django.contrib.auth import login
 from django.contrib.auth import authenticate,logout
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
-from .serializers import ProjectModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer
+from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer
 from rest_framework import viewsets,status,permissions
 load_dotenv()
 
@@ -235,7 +235,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
    def list(self, request, *args, **kwargs):
       projects=Project.objects.all()
-      serializer=ProjectModelSerializer(projects,many=True)
+      serializer=ProjectListModelSerializer(projects,many=True)
       return Response(serializer.data)
    
    def retrieve(self,request,pk):

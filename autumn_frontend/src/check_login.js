@@ -9,7 +9,7 @@ export default function CheckLogin(dispatch){
         console.log(BackendClient.request);
         console.log(res.data);
         if(!(res.data.Logged_In)){
-            //  window.location.href=`${FRONTEND_HOST}login`;
+            window.location.href=`${FRONTEND_HOST}login`;
             console.log("Hello")
         }
         else{
