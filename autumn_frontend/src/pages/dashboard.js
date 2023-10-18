@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import getprojects from "../requests/getprojects";
 import Project_Title from "../components/projects/header";
 import PageDrawer from "../components/Drawer";
+import ProjectForm from "../components/projects/projectForm";
 
 
 export default function Dashboard(){
@@ -20,6 +21,7 @@ export default function Dashboard(){
     return (
       <>
         <PageDrawer/>
+        <ProjectForm/>
       </>
     )
 

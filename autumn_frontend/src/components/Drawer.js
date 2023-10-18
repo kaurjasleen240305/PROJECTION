@@ -14,6 +14,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
+import { openForm } from '../features/project_formSlice';
 
 
 
@@ -51,14 +52,20 @@ export default function PageDrawer(){
   const dispatch=useDispatch();
   const username=useSelector((state)=>state.user.username)
   let is_open=useSelector((state)=>state.drawer.isOpen)
+  let x=useSelector((state)=>state.project_form.isOpen)
   const handleDrawerOpen = () => {
        dispatch(setisOpen(true))
   }
   const handleDrawerClose=()=>{
     dispatch(setisOpen(false))
   }
-
   
+const handleAddProject=()=>{
+    dispatch(openForm())
+    console.log(x)
+}
+
+
   
   
   return (
@@ -102,7 +109,7 @@ export default function PageDrawer(){
         <ProjectList/>
 
         <div style={{ position: 'absolute', bottom: 0,marginBottom:"10px",width:drawerWidth,justifyContent:'center' }}>
-         <Button variant="contained" color="primary" onclick={handleAddProject}>
+         <Button variant="contained" color="primary" onClick={handleAddProject}>
            ADD NEW PROJECT 
          </Button>
       </div>

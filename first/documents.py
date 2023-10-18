@@ -8,16 +8,16 @@ from elasticsearch import Elasticsearch
 
 
 
-@registry.register_document
-class ProjectDocument(Document):
-    id=Integer()
-    project_name=fields.TextField(attr="project_name")
+# @registry.register_document
+# class ProjectDocument(Document):
+#     id=Integer()
+#     project_name=fields.TextField(attr="project_name")
 
-    class Index:
-        name="project_index"
+#     class Index:
+#         name="project_index"
 
-    class Django:
-        model=Project
+#     class Django:
+#         model=Project
 
 
 @registry.register_document

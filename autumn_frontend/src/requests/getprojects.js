@@ -5,7 +5,7 @@ import { setprojectdata,changeLoadingStatus } from "../features/projectslice";
 const getprojects=()=>{
     return async(dispatch)=>{
         dispatch(changeLoadingStatus(true));
-        await BackendClient.get("/web_api/projects/").then((res)=>{
+        await BackendClient.get("projects/").then((res)=>{
             dispatch(changeLoadingStatus(false));
             console.log(res.data)
             return res.data;

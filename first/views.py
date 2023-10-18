@@ -286,7 +286,7 @@ class ListViewSet(viewsets.ModelViewSet):
      queryset=List.objects.all()
      serializer_class=ListModelSerializer
      authentication_classes=[SessionAuthentication]
-     permission_classes=[IsAuthenticated,is_member_admin_creator]
+     permission_classes=[IsAuthenticated]
      #def get_permission(self):
      #   if self.action in ['create','destroy','update']:
      #      obj=self.get_object()
@@ -317,7 +317,7 @@ class CardViewSet(viewsets.ModelViewSet):
    queryset=Card.objects.all()
    serializer_class=CardSerializer
    authentication_classes=[SessionAuthentication]
-   permission_classes=[IsAuthenticated,is_member_admin_creator_card]
+   permission_classes=[IsAuthenticated]
 
    def create(self,request,*args,**kwargs):
        current_user=User.objects.get(username=(request.session.get("username")))

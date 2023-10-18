@@ -5,7 +5,7 @@ import { FRONTEND_HOST } from "./hosts";
 
 export default function CheckLogin(dispatch){
  //   console.log(BackendClient)
-    BackendClient.get("/web_api/check_login",{withCredentials:true}).then((res)=>{
+    BackendClient.get("check_login",{withCredentials:true}).then((res)=>{
         console.log(BackendClient.request);
         console.log(res.data);
         if(!(res.data.Logged_In)){
