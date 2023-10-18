@@ -253,7 +253,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
       serializer=Procreser(data=copy)
       if serializer.is_valid():
          serializer.save()
-         return Response(serializer.data, status=status.HTTP_201_CREATED)
+         project=Project.objects.get(project_name=copy['project_name'])
+         ac_serializer=ProjectListModelSerializer(project)
+         return Response(ac_serializer.data, status=status.HTTP_201_CREATED)
       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
   ## TO OVERRIDE DELETE ACCORDING TO PROJECT MEMBERS ONLY AND ADMINS CAN DELETE

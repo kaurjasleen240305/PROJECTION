@@ -13,16 +13,22 @@ import { addProject } from "../../features/projectslice";
 
 export default function ProjectForm(){
     const isOpen=useSelector((state)=>state.project_form.isOpen)
+    const project_list=useSelector((state)=>state.project.projectData)
     const dispatch=useDispatch()
-    const addrequest=addproject()
     const handleCloseProject=()=>{
         dispatch(closeForm())
     }
+    const config = {
+        headers: {
+          'Content-Type': 'application/json', // Set the content type as needed
+        },
+      };
     const { control, handleSubmit,reset } = useForm();
     const onSubmit=(data)=>{
-        console.log(data)
-        let data_res=addrequest(dispatch,data)
-        dispatch(addProject(data_res))
+        BackendClient.post("projects/",data,config).then((res)=>{
+            console.log(res.data)
+            dispatch(addProject(res.data))
+        })
     }
     if (!isOpen) {
         return null; // Do not render the form if it's closed

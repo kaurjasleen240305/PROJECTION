@@ -11,7 +11,7 @@ const addproject=()=>{
     return async(dispatch,data)=>{
         await BackendClient.post("projects/",data,config).then((res)=>{
             console.log("Hi")
-            dispatch(changeLoadingStatus(false));
+            console.log(res)
             return res.data;
         })
         

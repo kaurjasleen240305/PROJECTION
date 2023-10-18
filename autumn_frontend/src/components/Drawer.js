@@ -94,6 +94,7 @@ const handleAddProject=()=>{
             '& .MuiDrawer-paper': {
                 width: drawerWidth,
                 boxSizing: 'border-box',
+                overflowY: 'auto',
               },
          }}
          variant="persistent"
@@ -108,7 +109,7 @@ const handleAddProject=()=>{
         <Divider />
         <ProjectList/>
 
-        <div style={{ position: 'absolute', bottom: 0,marginBottom:"10px",width:drawerWidth,justifyContent:'center' }}>
+        <div style={{ position: 'relative',marginBottom:"10px",width:drawerWidth,justifyContent:'center' }}>
          <Button variant="contained" color="primary" onClick={handleAddProject}>
            ADD NEW PROJECT 
          </Button>
