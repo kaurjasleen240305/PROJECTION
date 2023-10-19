@@ -296,6 +296,11 @@ class ListViewSet(viewsets.ModelViewSet):
      #   else:
      #      permission_classes=[IsAuthenticated]
      #   return permission_classes
+
+     def getlist_by_pid(self,request,pid):
+        req_lists=List.objects.filter(pid=pid)
+        serialized=ListCreateSerializer(req_lists,many=True)
+        return Response(serialized.data)
      
      def create(self,request,*args,**kwargs):
        current_user=User.objects.get(username=(request.session.get("username")))

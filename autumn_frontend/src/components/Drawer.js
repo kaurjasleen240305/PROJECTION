@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Drawer, Toolbar } from '@mui/material';
 import ProjectList from '../extras/object_to_list';
 import { styled, useTheme } from '@mui/material/styles';
@@ -15,6 +15,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
 import { openForm } from '../features/project_formSlice';
+import CheckLogin from '../check_login';
 
 
 
@@ -37,6 +38,27 @@ const AppBar = styled(MuiAppBar, {
   }));
 
 
+
+  const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+      flexGrow: 1,
+      padding: theme.spacing(3),
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      marginLeft: `-${drawerWidth}px`,
+      ...(open && {
+        transition: theme.transitions.create('margin', {
+          easing: theme.transitions.easing.easeOut,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
+      }),
+    }),
+  );
+
+
   const DrawerHeader=styled("div")(({theme})=>({
         display:"flex",
         alignItems:"center",
@@ -47,10 +69,13 @@ const AppBar = styled(MuiAppBar, {
   }));
   
 
-export default function PageDrawer(){
+export default function PageDrawer(props){
     const theme=useTheme();
   const dispatch=useDispatch();
+  const Render=props.component
+  console.log(Render)
   const username=useSelector((state)=>state.user.username)
+  console.log(username)
   let is_open=useSelector((state)=>state.drawer.isOpen)
   let x=useSelector((state)=>state.project_form.isOpen)
   const handleDrawerOpen = () => {
@@ -64,7 +89,10 @@ const handleAddProject=()=>{
     dispatch(openForm())
     console.log(x)
 }
-
+useEffect(() => {
+    // Dispatch an action to fetch the username (replace with your actual action)
+    CheckLogin(dispatch)
+  }, [dispatch]);
 
   
   
@@ -115,6 +143,10 @@ const handleAddProject=()=>{
          </Button>
       </div>
       </Drawer>
+      <Main open={is_open}>
+        <DrawerHeader />
+        <Render/>
+      </Main>
     </Box>
   );
 }

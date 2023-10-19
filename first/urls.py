@@ -20,7 +20,8 @@ urlpatterns = [
     path('login_password',views.login_password),
     path('logout',views.logout_pass),
     path('projects/<int:pk>/add_member',views.ProjectViewSet.as_view({'post':"add_member"}),name='project_add_member'),
-    path('cards/<int:card_id>/comments/',views.room,name="card_id")
+    path('cards/<int:card_id>/comments/',views.room,name="card_id"),
+    path("lists/pid/<int:pid>",views.ListViewSet.as_view({"get":"getlist_by_pid"}),name="list_by_pid"),
 ]
 
 if settings.DEBUG:
