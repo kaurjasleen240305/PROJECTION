@@ -299,7 +299,7 @@ class ListViewSet(viewsets.ModelViewSet):
 
      def getlist_by_pid(self,request,pid):
         req_lists=List.objects.filter(pid=pid)
-        serialized=ListCreateSerializer(req_lists,many=True)
+        serialized=ListModelSerializer(req_lists,many=True)
         return Response(serialized.data)
      
      def create(self,request,*args,**kwargs):
@@ -310,13 +310,13 @@ class ListViewSet(viewsets.ModelViewSet):
        cond3=current_project.creator==(request.session.get("username"))
        print(request.session.get("username"))
        result=(cond1 or cond2 or cond3)
-       if(result):
-        serializer=ListCreateSerializer(data=request.data)
-        if serializer.is_valid():
-               serializer.save()
-               return Response(serializer.data)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-       return Response({"error":"YOU DONT HAVE ACCESS TO CREATE PROJECT"})
+      #  if(result):
+       serializer=ListCreateSerializer(data=request.data)
+       if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+       return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+      #  return Response({"error":"YOU DONT HAVE ACCESS TO CREATE PROJECT"})
      
 
 

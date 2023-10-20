@@ -16,6 +16,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Divider from '@mui/material/Divider';
 import { openForm } from '../features/project_formSlice';
 import CheckLogin from '../check_login';
+import getprojects from '../requests/getprojects';
 
 
 
@@ -72,8 +73,10 @@ const AppBar = styled(MuiAppBar, {
 export default function PageDrawer(props){
     const theme=useTheme();
   const dispatch=useDispatch();
+  const request2=getprojects()
   const Render=props.component
   console.log(Render)
+
   const username=useSelector((state)=>state.user.username)
   console.log(username)
   let is_open=useSelector((state)=>state.drawer.isOpen)
@@ -92,6 +95,7 @@ const handleAddProject=()=>{
 useEffect(() => {
     // Dispatch an action to fetch the username (replace with your actual action)
     CheckLogin(dispatch)
+    request2(dispatch)
   }, [dispatch]);
 
   

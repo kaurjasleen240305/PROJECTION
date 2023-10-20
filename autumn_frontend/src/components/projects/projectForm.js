@@ -45,6 +45,8 @@ export default function ProjectForm(){
         borderRadius:"5px",
       };
       const bigdiv={
+        position:"absolute",
+        zIndex:"20",
         width:"100vw",
         height:"100vh",
         alignItems:"center",

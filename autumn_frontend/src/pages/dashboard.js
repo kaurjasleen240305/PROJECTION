@@ -25,10 +25,10 @@ export default function Dashboard(){
         request1(dispatch);
     },[dispatch]);
     return (
-      <>
-        <PageDrawer component={Project_Title}/>
-        <ProjectForm/>
-      </>
+      <div sx={{position:"relative"}}>
+        <PageDrawer sx={{position:"absolute"}} component={Project_Title}/>
+        <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
+      </div>
     )
 
 }

@@ -20,15 +20,15 @@ from elasticsearch import Elasticsearch
 #         model=Project
 
 
-@registry.register_document
-class ListDocument(Document):
-    list_name=fields.TextField(attr="list_name")
-    id=Integer()
-    class Index:
-        name="list_index"
+# @registry.register_document
+# class ListDocument(Document):
+#     list_name=fields.TextField(attr="list_name")
+#     id=Integer()
+#     class Index:
+#         name="list_index"
 
-    class Django:
-        model=List
+#     class Django:
+#         model=List
 
 
 @registry.register_document
