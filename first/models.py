@@ -41,9 +41,10 @@ class Card(models.Model):
   created_time=models.DateTimeField(auto_now_add=True)
   lid=models.ForeignKey(List,on_delete=models.CASCADE,related_name="cards")
   completion_status=models.IntegerField()
+  created_by=models.ForeignKey(User,related_name="cards_by_user",on_delete=models.DO_NOTHING,null=True)
   
 class Card_Subtask(models.Model):
-    card_id=models.ForeignKey(Card,on_delete=models.CASCADE,related_name='card_tasks')
+    card_id=models.ForeignKey(Card,related_name='card_tasks',on_delete=models.CASCADE)
     task_name=models.CharField(max_length=300,unique=True)
     assignees=models.ManyToManyField(User)
     is_complete=models.BooleanField(default=False)

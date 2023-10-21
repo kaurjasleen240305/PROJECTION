@@ -7,13 +7,13 @@ from django.http import Http404
 import os
 import requests
 from dotenv import load_dotenv
-from .models import User,Project,Card_Subtask,Card,List
+from .models import User,Project,Card_Subtask,Card,List,Comment
 from django.db.models import Prefetch
 from django.contrib.auth import login
 from django.contrib.auth import authenticate,logout
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
-from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer
+from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer
 from rest_framework import viewsets,status,permissions
 load_dotenv()
 
@@ -325,7 +325,7 @@ class CardViewSet(viewsets.ModelViewSet):
    serializer_class=CardSerializer
    authentication_classes=[SessionAuthentication]
    permission_classes=[IsAuthenticated]
-
+   
    def create(self,request,*args,**kwargs):
        current_user=User.objects.get(username=(request.session.get("username")))
        current_list=List.objects.get(pk=request.data['lid'])
@@ -337,6 +337,7 @@ class CardViewSet(viewsets.ModelViewSet):
        if(result):
           data_copy=request.data.copy()
           data_copy["completion_status"]=0
+          data_copy['created_by']=current_user
           serializer=Card_createSerializer(data=data_copy)
           if serializer.is_valid():
              serializer.save()
@@ -344,6 +345,35 @@ class CardViewSet(viewsets.ModelViewSet):
           return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
        return Response({"message":"NO ACCESS TO ADD CARD"})
    
+   # def retrieve(self,request,pk):
+   #    try:
+   #       card = Card.objects.get(pk=pk)
+   #    except card.DoesNotExist:
+   #       return Response({'error': 'Card not found'}, status=status.HTTP_404_NOT_FOUND)
+   #    serializer = CardSerializer(card)
+   #    return Response(serializer.data)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+      queryset=Card.objects.all()
+      serializer_class=CommentCreateSerializer
+      authentication_classes=[SessionAuthentication]
+      permission_classes=[IsAuthenticated]
+
+      def create(self,request,*args,**kwargs):
+         current_user=User.objects.get(username=(request.session.get("username")))
+         data_copy=request.data.copy()
+         data_copy['sender']=current_user
+         serializer=CommentCreateSerializer(data=data_copy)
+         if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+         return Response("Some field is missing")
+      
+
+      
+
+
 
    
    

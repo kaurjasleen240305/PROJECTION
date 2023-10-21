@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-1%u3vp58l=6u5ocz_h#9gkv&b=3!(25xa3nb+&+m2i-^z$=d&w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -56,7 +56,21 @@ ELASTICSEARCH_DSL={
     }
 }
 
-CORS_ALLOW_ALL_ORIGINS = True  
+
+
+
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+]
+
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
@@ -64,18 +78,19 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3001',
 ]
 
+CORS_ORIGIN_WHITELIST=(
+    'http://127.0.0.1:3000',
+)
+CORS_ALLOW_ALL_ORIGINS = True 
+# CORS_ORIGIN_ALLOW_ALL = True
 
-
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-
+CORS_ALLOW_METHODS=[
+    "GET",
+    "POST",
+    "PUT",
+    "DELETE",
+    "PATCH",
+    "OPTIONS",
 ]
 
 ROOT_URLCONF = 'oauth.urls'

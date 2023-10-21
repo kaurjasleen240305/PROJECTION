@@ -25,10 +25,15 @@ class Card_Images_Serializer(serializers.ModelSerializer):
         field="__all__"          
     
 
-class CommentModelSerializer(serializers.ModelSerializer):
+class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Comment
-        field='__all__'
+        fields=['card_id','sender','comment']
+
+class CommentSendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Comment
+        fields=['sender','comment']
 
 
 class Card_subtaskSerializer(serializers.ModelSerializer):
@@ -40,20 +45,20 @@ class Card_subtaskSerializer(serializers.ModelSerializer):
 
 class CardSerializer(serializers.ModelSerializer):
     card_tasks=Card_subtaskSerializer(many=True)
-    comments=CommentModelSerializer(many=True)
+    comments=CommentSendSerializer(many=True)
     card_images=Card_Images_Serializer(many=True)
     card_att=Card_Att_Serializer(many=True)
     card_desc=Card_Desc_Serializer(many=True)
     card_labels=Card_Label_Serializer(many=True)
     class Meta:
         model=Card
-        fields=['pk','card_name','card_logo','created_time','completion_status','card_tasks','lid','comments','card_att','card_images','card_desc','card_labels']
+        fields=['pk','card_name','card_logo','created_time','completion_status','card_tasks','lid','comments','card_att','card_images','card_desc','card_labels',"created_by"]
         partial=True
 
 class Card_createSerializer(serializers.ModelSerializer):
     class Meta:
         model=Card
-        fields=['card_name',"completion_status","lid"]
+        fields=['card_name',"completion_status","lid",'created_by']
 
 
 class ListModelSerializer(serializers.ModelSerializer):

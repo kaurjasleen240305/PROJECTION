@@ -5,13 +5,11 @@ const cardSlice=createSlice({
    name:"all_cards",
    initialState:{
     value:null,
-    cardData:[],
+    cardData:{},
     isLoading:true,
     },
     reducers:{
-        addCard:(state,action)=>{
-            state.listData.push(action.payload)
-        },
+        
         setcarddata:(state,action)=>{
             state.cardData=action.payload
         },

@@ -31,14 +31,14 @@ from elasticsearch import Elasticsearch
 #         model=List
 
 
-@registry.register_document
-class CardDocument(Document):
-    card_name=fields.TextField(attr="card_name")
-    id=Integer()
-    class Index:
-        name="card_index"
+# @registry.register_document
+# class CardDocument(Document):
+#     card_name=fields.TextField(attr="card_name")
+#     id=Integer()
+#     class Index:
+#         name="card_index"
 
-    class Django:
-        model=Card
+#     class Django:
+#         model=Card
 
 
