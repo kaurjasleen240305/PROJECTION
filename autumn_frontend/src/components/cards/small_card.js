@@ -21,7 +21,7 @@ function Small_Card(props){
     useEffect(()=>{
         console.log(cid)
         console.log("Hi")
-    })
+    },[cid])
     
 
 

@@ -5,7 +5,8 @@ import drawerReducer from "./features/drawerSlice";
 import projectformReducer from "./features/project_formSlice";
 import projectIdReducer from "./features/projectIdSlice"
 import listReducer from "./features/listSlice";
-import cardReducer from "./features/cardSlice"
+import cardReducer from "./features/cardSlice";
+import commentReducer from "./features/commentSlice";
 
 
 
@@ -17,6 +18,7 @@ var rootreducer={
    project_Id:projectIdReducer,
    lists:listReducer,
    cards:cardReducer,
+   comments:commentReducer,
 }
 const store=configureStore({
     reducer:rootreducer,

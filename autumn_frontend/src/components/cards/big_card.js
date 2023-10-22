@@ -11,6 +11,12 @@ import { useEffect } from 'react';
 import { setcarddata } from '../../features/cardSlice';
 import getprojects from '../../requests/getprojects';
 import {format,parseISO} from 'date-fns';
+import { WEBSOCKET_HOST } from '../../hosts';
+import { setcommentdata } from '../../features/commentSlice';
+import {useForm,Controller} from "react-hook-form"
+import Comments from './comments';
+import { TextField } from '@mui/material';
+import { addComment } from '../../features/commentSlice';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -24,26 +30,80 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Big_Card(){
     const isOpen=useSelector((state)=>state.project_form.isBigOpen);
+
     const dispatch=useDispatch()
+
     let cid=useSelector((state)=>state.project_Id.openedCardId);
+    // let comments=useSelector((state)=>state.comments.commentData)
+    // // let web_socket=new WebSocket("")
     const request1=getCard()
     console.log(cid)
-    let req1=getCard()
-    useEffect(()=>{
-    if(cid!=null){
-        console.log(cid)
-        request1(dispatch,cid);
-    }
-    }, [cid])
-    const card_Selected=useSelector((state)=>state.cards.cardData)
-   
-    // console.log(card_Selected)
+    let  card_Selected=useSelector((state)=>state.cards.cardData)
+    console.log(card_Selected)
+    console.log("BigCard")
+            
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        reset,
+      } = useForm({
+        defaultValues: {
+          comment: "",
+        },
+      });
+
+      const onSubmit = (data) => {
+        data['card_id']=cid;
+        console.log(data)
+        BackendClient.post("comments/",data).then((res)=>{
+            console.log(res.data)
+            let json_data=JSON.stringify(res.data);
+            web_socket.send(json_data);
+        })
+        reset()
+      };
+
+
+      let web_socket=new WebSocket("ws://"
+        + WEBSOCKET_HOST
+        + '/ws/cards/'
+        + cid
+        + '/comments/');
     
-    if(!isOpen){
-        return null
+     web_socket.onopen = (event) => {
+        console.log("connected");
+      };
+     
+     web_socket.onclose = (event) => {
+        console.log("disconnected");
+      };
+
+      web_socket.onmessage=(event)=>{
+          console.log(event.data)
+          request1(dispatch,cid)
+      }
+
+
+    useEffect(()=>{
+       
+      if(cid!=null){
+        console.log(cid)
+        console.log("useeffect")
+        request1(dispatch,cid);
+        // dispatch(setcommentdata(card_Selected.comments))
+        // console.log(comments
     }
+    },[dispatch,cid])
     const handleCloseBig=()=>{
         dispatch(closebig())
+    }
+    // let comments_cur=card_Selected.comments
+    // console.log(card_Selected)
+    // console.log(comments_cur)
+    // console.log("Hi")
+    if(!isOpen){
+        return null
     }
     return(
        <div style={{width:"100%",height:"100%",position:"absolute",zIndex:100,backgroundColor:'rgba(255, 255, 255, 0.7)'}}>
@@ -57,12 +117,55 @@ export default function Big_Card(){
                <p style={{color:"grey"}}>Created Time:  {card_Selected.created_time}</p>
                <div style={{display:"flex",flexDirection:"column"}}>
                   <h2 style={{color:"grey"}}>Comments</h2>
-                  {}
+                  <Comments comments={card_Selected.comments}/>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                      <Controller
+                        name="comment"
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field }) => (
+                          <TextField
+                            variant="outlined"
+                            label="Message"
+                            size="small"
+                            margin="normal"
+                            color="primary"
+                            sx={{
+                              width: "90%",
+                              input: {
+                                color: "black",
+                              },
+                              borderColor:"white"
+                            }}
+                            {...field}
+                          />
+                        )}
+                      />
+                      <input
+                        type="submit"
+                        value="Send"
+                        style={{
+                          backgroundColor: "lightblue",
+                          color:"black",
+                          border:"none",
+                          marginLeft:"2px",
+                          marginTop:"15px",
+                          height:"40px"
+                        }}
+                      />
+                      {errors.location && (
+                        <div className="error">This field is required</div>
+                      )}
+                    </form>
                </div>
            </div>
-              
+           
            </div>
        </div>
        
     )
 }
+
+
+
+

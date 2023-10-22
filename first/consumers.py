@@ -27,7 +27,8 @@ class CardConsumer(WebsocketConsumer):
 
     def receive(self,text_data):
         data=json.loads(text_data)
-        message=data['message']
+        print(data)
+        message=data['comment']
         sender=data['sender']
         try:
             user=User.objects.get(username=sender)
@@ -42,18 +43,20 @@ class CardConsumer(WebsocketConsumer):
         room_name=(self.room_group_name)
         print(message)
         async_to_sync(self.channel_layer.group_send)(
-            room_name, {"type": "chat.message","message": message}
+            room_name, {"type": "chat.message","comment": message,"sender":sender}
         )
         print("Sent")
 
 
     def chat_message(self, event):
       print("Hello")
-      message = event['message']
+      message = event['comment']
+      sender=event['sender']
       print(message)
       (self.send)(json.dumps({
             'type':'chat.message',
             'message':message,
+            'sender':sender,
      }))
     # Do something with the message (e.g., update UI)
     
