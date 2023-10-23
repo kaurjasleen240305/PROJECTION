@@ -7,6 +7,9 @@ import projectIdReducer from "./features/projectIdSlice"
 import listReducer from "./features/listSlice";
 import cardReducer from "./features/cardSlice";
 import commentReducer from "./features/commentSlice";
+import projectinfoReducer from "./features/project_info"
+import memberReducer from "./features/open_memSlice"
+import allUserReducer from "./features/all_users"
 
 
 
@@ -19,6 +22,10 @@ var rootreducer={
    lists:listReducer,
    cards:cardReducer,
    comments:commentReducer,
+   project_info:projectinfoReducer,
+   project_members:memberReducer,
+   all_users:allUserReducer,
+
 }
 const store=configureStore({
     reducer:rootreducer,

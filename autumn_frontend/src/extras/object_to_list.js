@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 const ProjectList=()=>{
     const projects=useSelector((state)=>state.project.projectData);
     const navigate=useNavigate();
-   
+    
     
     return (
         <List>

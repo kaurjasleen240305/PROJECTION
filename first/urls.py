@@ -10,6 +10,7 @@ router.register(r'projects',views.ProjectViewSet)
 router.register(r'lists',views.ListViewSet)
 router.register(r'cards',views.CardViewSet)
 router.register(r'comments',views.CommentViewSet)
+router.register(r'card_sub',views.CardSubtaskViewSet)
 
 
 urlpatterns = [
@@ -23,6 +24,8 @@ urlpatterns = [
     path('projects/<int:pk>/add_member',views.ProjectViewSet.as_view({'post':"add_member"}),name='project_add_member'),
     path('cards/<int:card_id>/comments/',views.room,name="card_id"),
     path("lists/pid/<int:pid>",views.ListViewSet.as_view({"get":"getlist_by_pid"}),name="list_by_pid"),
+    path('projects/get_members/<int:pk>',views.ProjectViewSet.as_view({"get":"get_members"},name="get_members")),
+    path('projects/get_non_members/<int:pk>',views.ProjectViewSet.as_view({"get":"get_non_members"},name="get_non_members")),
 ]
 
 if settings.DEBUG:

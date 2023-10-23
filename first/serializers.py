@@ -39,7 +39,14 @@ class CommentSendSerializer(serializers.ModelSerializer):
 class Card_subtaskSerializer(serializers.ModelSerializer):
     class Meta:
         model=Card_Subtask
-        fields=['task_name','assignees','is_complete','card_id']
+        fields=['task_name','assignees','is_complete','card_id','pk']
+
+class CardSubtaskCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Card_Subtask
+        fields=['task_name',"card_id"]
+
+
 
 
 
@@ -79,7 +86,7 @@ class ListCreateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields=['username','is_active',"is_superuser"]
+        fields=['username','is_active',"is_superuser","profile_pic"]
         partial=True
 
 
@@ -108,6 +115,13 @@ class Procreser(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ['project_name','creator','wiki'] 
+
+
+class ProjectMembersSerializer(serializers.ModelSerializer):
+    project_members=UserSerializer(many=True)
+    class Meta:
+        model=Project
+        fields=['pk','project_members','project_name']
 
 
 

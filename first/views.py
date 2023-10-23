@@ -13,7 +13,7 @@ from django.contrib.auth import login
 from django.contrib.auth import authenticate,logout
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
-from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer
+from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer
 from rest_framework import viewsets,status,permissions
 load_dotenv()
 
@@ -235,7 +235,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
    def list(self, request, *args, **kwargs):
       projects=Project.objects.all()
-      serializer=ProjectListModelSerializer(projects,many=True)
+      serializer=ProjectModelSerializer(projects,many=True)
       return Response(serializer.data)
    
    def retrieve(self,request,pk):
@@ -245,6 +245,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
          return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
       serializer = ProjectModelSerializer(project)
       return Response(serializer.data)
+   
    
    def create(self,request,*args,**kwargs):
       copy=request.data.copy()
@@ -281,7 +282,21 @@ class ProjectViewSet(viewsets.ModelViewSet):
          return Response({"message":f'{username} added Successfully to this project'})
       return Response({"message":"You dont have access to add member to this Project"})
    
+
+   @action(detail=True,methods=["GET",])
+   def get_members(self,request,*args,**kwargs):
+      project_instance=self.get_object()
+      serializer=ProjectMembersSerializer(project_instance)
+      return Response(serializer.data)
    
+
+   @action(detail=True,methods=["GET",])
+   def get_non_members(self,request,*args,**kwargs):
+      project_instance=self.get_object()
+      non_team_members = User.objects.exclude(project__in=[project_instance])
+      serializer=UserSerializer(non_team_members,many=True)
+      return Response(serializer.data)
+
 
    
 class ListViewSet(viewsets.ModelViewSet):
@@ -369,6 +384,61 @@ class CommentViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
          return Response("Some field is missing")
+      
+
+class CardSubtaskViewSet(viewsets.ModelViewSet):
+   queryset=Card_Subtask.objects.all()
+   serializer_class=Card_subtaskSerializer
+   authentication_classes=[SessionAuthentication]
+   permission_classes=[IsAuthenticated]
+
+   def create(self,request,*args,**kwargs):
+      current_user=User.objects.get(username=(request.session.get("username")))
+      card=Card.objects.get(pk=request.data['card_id'])
+      cond1=False
+      cond2=False
+      print(card.created_by)
+      print(current_user.username)
+      print((card.created_by.username)==(current_user.username))
+      print(current_user.is_superuser)
+      if((card.created_by.username)==(current_user.username)):
+            cond1=True
+      if(current_user.is_superuser):
+         cond2=True
+      if(cond1 or cond2):
+         serializer=CardSubtaskCreateSerializer(data=request.data)
+         if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+         return Response("Some field is missing")
+      return Response("NO ACCESS")
+   
+   def update(self,request,*args,**kwargs):
+      instance=self.get_object()
+      new_value=request.data['bool']
+      card=Card.objects.get(pk=instance.card_id.pk)
+      current_user=User.objects.get(username=(request.session.get("username")))
+      cond1=False
+      cond2=False
+      print(card.created_by)
+      print(current_user.username)
+      print((card.created_by.username)==(current_user.username))
+      print(current_user.is_superuser)
+      if((card.created_by.username)==(current_user.username)):
+            cond1=True
+      if(current_user.is_superuser):   
+         cond2=True
+      if(cond1 or cond2):
+         print("Hi")
+         instance.is_complete=new_value
+         instance.save()
+         serializer=self.get_serializer(instance)
+         print(serializer.data)
+         return Response(serializer.data)
+      return Response("NO ACCESS")
+
+      
+   
       
 
       

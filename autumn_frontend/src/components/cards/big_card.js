@@ -17,6 +17,7 @@ import {useForm,Controller} from "react-hook-form"
 import Comments from './comments';
 import { TextField } from '@mui/material';
 import { addComment } from '../../features/commentSlice';
+import Card_Subtasks from './card_subtasks';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -108,14 +109,16 @@ export default function Big_Card(){
     return(
        <div style={{width:"100%",height:"100%",position:"absolute",zIndex:100,backgroundColor:'rgba(255, 255, 255, 0.7)'}}>
        <div style={{width:"600px",height:"500px",overflowY:"auto",backgroundColor:"lightgray",marginTop:"10%",marginLeft:"35%",borderRadius:"8px"}}>
-           <div style={{width:"100%",height:"80px",paddingRight:"10px",paddingLeft:"10px",display:"flex",alignItems:"center",}}>
+           <div style={{width:"100%",height:"80px",paddingRight:"10px",paddingLeft:"20px",display:"flex",alignItems:"center",}}>
               <ClearIcon onClick={handleCloseBig}/>
            </div>
-           <div style={{marginLeft:"50px",marginRight:"50px",marginTop:"30px"}}>
+           <div style={{marginLeft:"50px",marginRight:"50px",marginTop:"30px",maxWidth:"90%"}}>
                <h1>{card_Selected.card_name}</h1>
                <p style={{color:"grey"}}>Created By: {card_Selected.created_by}</p>
                <p style={{color:"grey"}}>Created Time:  {card_Selected.created_time}</p>
-               <div style={{display:"flex",flexDirection:"column"}}>
+               <div style={{display:"flex",flexDirection:"column",maxWidth:"100%"}}>
+                  <h2 style={{color:"grey"}}>Card Subtasks</h2>
+                  <Card_Subtasks card_subtasks={card_Selected.card_tasks} cid={card_Selected.pk}/>
                   <h2 style={{color:"grey"}}>Comments</h2>
                   <Comments comments={card_Selected.comments}/>
                   <form onSubmit={handleSubmit(onSubmit)}>
