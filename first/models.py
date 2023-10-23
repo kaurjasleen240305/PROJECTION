@@ -45,8 +45,8 @@ class Card(models.Model):
   
 class Card_Subtask(models.Model):
     card_id=models.ForeignKey(Card,related_name='card_tasks',on_delete=models.CASCADE)
-    task_name=models.CharField(max_length=300,unique=True)
-    assignees=models.ManyToManyField(User)
+    task_name=models.CharField(max_length=300)
+    assignees=models.ForeignKey(User,related_name="Task_Done_By",on_delete=models.DO_NOTHING,null=True)
     is_complete=models.BooleanField(default=False)
 
 

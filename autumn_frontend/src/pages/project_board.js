@@ -9,6 +9,7 @@ import Big_Card from '../components/cards/big_card';
 import getproject_info from '../requests/getproject';
 import Show_member from '../components/projects/members';
 import getNonmembers from '../requests/get_n_mem';
+import Assignees from '../components/cards/to_assign';
 
 
 export default function ProjectBoard(){
@@ -31,6 +32,7 @@ export default function ProjectBoard(){
         }}
         />
         <Show_member/>
+        <Assignees/>
         <ListForm/>
        </div>
     )

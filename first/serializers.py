@@ -44,7 +44,7 @@ class Card_subtaskSerializer(serializers.ModelSerializer):
 class CardSubtaskCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=Card_Subtask
-        fields=['task_name',"card_id"]
+        fields=['task_name','card_id']
 
 
 

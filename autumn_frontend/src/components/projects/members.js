@@ -28,13 +28,13 @@ export default function Show_member(){
               <ClearIcon onClick={handleClose}/>
            </div>
             <h2 style={{marginLeft:"10px",color:"gray"}}>{cur_pro.project_name} Members:</h2>
-            <div style={{display:"flex",overflowX:"auto",justifyContent:"space-between",marginLeft:"30px",marginRight:"30px",marginBottom:"40px"}}>
+            <div style={{display:"flex",overflowX:"auto",marginLeft:"30px",marginRight:"30px",marginBottom:"40px"}}>
               {(cur_pro.project_members).map((item)=>(
                  <UserBox user_info={item} is_member={true}/>
              ))}
             </div>
             <h2 style={{marginLeft:"10px",color:"gray"}}>IMG Members:</h2>
-            <div style={{display:"flex",overflowX:"auto",justifyContent:"space-between",marginLeft:"30px",marginRight:"30px",marginBottom:"40px"}}>
+            <div style={{display:"flex",overflowX:"auto",marginLeft:"30px",marginRight:"30px",marginBottom:"40px"}}>
             {(non_members).map((item)=>(
                  <UserBox user_info={item} is_member={false}/>
              ))}

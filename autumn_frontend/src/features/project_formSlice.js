@@ -6,6 +6,7 @@ const projectformSlice=createSlice({
         isOpen:false,
         isListOpen:false,
         isBigOpen:false,
+        isAssignOpen:false,
     },
     reducers:{
         openForm:(state)=>{
@@ -25,9 +26,15 @@ const projectformSlice=createSlice({
         },
         closebig:(state)=>{
             state.isBigOpen=false
+        },
+        openAssign:(state)=>{
+            state.isAssignOpen=true
+        },
+        closeAssign:(state)=>{
+            state.isAssignOpen=false
         }
     }
 })
 
-export const {openForm,closeForm,openListForm,closeListForm,openbig,closebig}=projectformSlice.actions
+export const {openForm,closeForm,openListForm,closeListForm,openbig,closebig,openAssign,closeAssign}=projectformSlice.actions
 export default projectformSlice.reducer

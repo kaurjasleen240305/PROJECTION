@@ -276,11 +276,23 @@ class ProjectViewSet(viewsets.ModelViewSet):
       project_instance=self.get_object()
       username=request.data['username']
       user=User.objects.get(username=username)
-      cond2=(project_instance.creator==(request.session.get("username")))
+      cond2=(project_instance.creator.username==(request.session.get("username")))
       if(cond2):
          project_instance.project_members.add(user)
-         return Response({"message":f'{username} added Successfully to this project'})
-      return Response({"message":"You dont have access to add member to this Project"})
+         return Response("DONE")
+      return Response("NO ACCESS")
+   
+   @action(detail=True,methods=["POST",])
+   def remove_member(self,request,*args,**kwargs):
+      project_instance=self.get_object()
+      username=request.data['username']
+      user=User.objects.get(username=username)
+      cond2=(project_instance.creator.username==(request.session.get("username")))
+      print(cond2)
+      if(cond2):
+         project_instance.project_members.remove(user)
+         return Response("DONE")
+      return Response("NO ACCESS")
    
 
    @action(detail=True,methods=["GET",])
@@ -407,10 +419,11 @@ class CardSubtaskViewSet(viewsets.ModelViewSet):
          cond2=True
       if(cond1 or cond2):
          serializer=CardSubtaskCreateSerializer(data=request.data)
+         print(request.data)
          if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-         return Response("Some field is missing")
+         return Response("Not done")
       return Response("NO ACCESS")
    
    def update(self,request,*args,**kwargs):
@@ -436,6 +449,26 @@ class CardSubtaskViewSet(viewsets.ModelViewSet):
          print(serializer.data)
          return Response(serializer.data)
       return Response("NO ACCESS")
+   
+   @action(detail=True, methods=['post'])
+   def update_assignee(self,request,pk=None):
+      sub_task=self.get_object()
+      new_username=request.data['username']
+      curr_user=User.objects.get(username=(request.session.get("username")))
+      card=Card.objects.get(pk=sub_task.card_id.pk)
+      lis=List.objects.get(pk=card.lid.pk)
+      pro=Project.objects.get(pk=lis.pid.pk)
+      new_user_oj=User.objects.get(username=new_username)
+      cond1=((request.session.get("username"))==(pro.creator.username))
+      cond2=(curr_user.is_superuser)
+      if (cond1 or cond2):
+         sub_task.assignees=new_user_oj
+         sub_task.save()
+         return Response("DONE")
+      return Response("NO ACCESS")
+
+   
+   
 
       
    
