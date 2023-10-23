@@ -12,10 +12,10 @@ export default function UserBox(props){
     let user=props.user_info
     let mem=props.is_member
 
-    handleAdd=()=>{
+    let handleAdd=()=>{
       
     }
-    handleRemove=()=>{
+    let handleRemove=()=>{
 
     }
     return(
