@@ -13,6 +13,8 @@ import Small_Card from "../cards/small_card";
 import { Button } from "@mui/material";
 import PeopleIcon from '@mui/icons-material/People';
 import { openmembers } from "../../features/open_memSlice";
+import { openCardForm } from "../../features/project_formSlice";
+import { setopenedListId } from "../../features/projectIdSlice";
 
 
 const drawerWidth=240
@@ -56,7 +58,11 @@ export default function ListScroll(){
         dispatch(openmembers())
         console.log("Hi")
     }
-
+    let handleAddCard=(lid)=>{
+        console.log(lid)
+        dispatch(openCardForm())
+        dispatch(setopenedListId(lid))
+    }
 
     useEffect(() => {
         // Make the request to fetch lists when pid changes
@@ -86,7 +92,7 @@ export default function ListScroll(){
         {(item.cards).map((card)=>(
             <Small_Card card_name={card.card_name} cid={card.pk}/>
         ))}
-
+        <Button variant="contained" color="primary" sx={{width:"200px",marginLeft:"50px",marginBottom:"30px",}} onClick={()=>handleAddCard(item.pk)}>ADD CARD</Button>
        </div>
     ))}
     <div style={{width:"200px", height:"50px",backgroundColor:"gray",borderRadius:"8px",display:"flex",alignItems:"center",marginRight:"20px"}}>

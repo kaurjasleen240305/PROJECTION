@@ -36,7 +36,7 @@ class List(models.Model):
 
 
 class Card(models.Model):
-  card_name=models.CharField(max_length=100,unique=True,default="Untitled")
+  card_name=models.CharField(max_length=100,default="Untitled")
   card_logo=models.ImageField(upload_to='card_logo/')
   created_time=models.DateTimeField(auto_now_add=True)
   lid=models.ForeignKey(List,on_delete=models.CASCADE,related_name="cards")
