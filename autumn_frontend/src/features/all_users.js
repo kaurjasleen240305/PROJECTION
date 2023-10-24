@@ -8,8 +8,8 @@ const allUserSlice=createSlice({
         isLoading:true,
     },
     reducers:{
-        setUserdata:(state,action)=>{
-            state.projectData=action.payload
+        setallUserdata:(state,action)=>{
+            state.userData=action.payload
         },
         changeLoadingStatus:(state,action)=>{
             state.isLoading=action.payload
@@ -17,5 +17,5 @@ const allUserSlice=createSlice({
     }
 })
 
-export const {setUserdata,changeLoadingStatus}=allUserSlice.actions;
+export const {setallUserdata,changeLoadingStatus}=allUserSlice.actions;
 export default allUserSlice.reducer;

@@ -8,7 +8,8 @@ export const userSlice=createSlice({
         username:"",
         email:"",
         enrolment_no:"",
-        is_admin:"",
+        is_admin:false,
+        is_active:true,
     },
     reducers:{
         setUserData:(state,action)=>{
@@ -17,7 +18,8 @@ export const userSlice=createSlice({
             state.username=action.payload.username;
             state.email=action.payload.email;
             state.enrolment_no=action.payload.enrolment_no;
-            state.is_admin=action.payload.is_admin;
+            state.is_admin=action.payload.is_superuser;
+            state.is_active=action.payload.is_active
         }
     },
 

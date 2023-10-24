@@ -86,7 +86,7 @@ class ListCreateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields=['username','is_active',"is_superuser","profile_pic"]
+        fields=['username','is_active',"is_superuser","profile_pic",'email']
         partial=True
 
 

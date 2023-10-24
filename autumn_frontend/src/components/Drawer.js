@@ -17,6 +17,11 @@ import Divider from '@mui/material/Divider';
 import { openForm } from '../features/project_formSlice';
 import CheckLogin from '../check_login';
 import getprojects from '../requests/getprojects';
+import GroupIcon from '@material-ui/icons/Group';
+import { useNavigate } from 'react-router-dom';
+import getallUsers from "../requests/allUsers";
+
+
 
 
 
@@ -75,6 +80,8 @@ export default function PageDrawer(props){
   const dispatch=useDispatch();
   const request2=getprojects()
   const Render=props.component
+  const navigate=useNavigate();
+  let getallUser=getallUsers()
   console.log(Render)
 
   const username=useSelector((state)=>state.user.username)
@@ -91,6 +98,12 @@ export default function PageDrawer(props){
 const handleAddProject=()=>{
     dispatch(openForm())
     console.log(x)
+}
+
+let handleUsers=()=>{
+    console.log("Hi")
+    getallUser(dispatch)
+    navigate("/users/")
 }
 useEffect(() => {
     // Dispatch an action to fetch the username (replace with your actual action)
@@ -114,9 +127,10 @@ useEffect(() => {
         >
             <MenuIcon/>
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{marginRight:"75%"}}>
             Welcome {username}
           </Typography>
+          <Button variant="contained" color="secondary" onClick={handleUsers}>ALL USERS</Button>
         </Toolbar>
       </AppBar>
       <Drawer

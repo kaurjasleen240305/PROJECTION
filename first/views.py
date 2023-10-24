@@ -15,7 +15,10 @@ from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
 from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer
 from rest_framework import viewsets,status,permissions
+# from django_elasticsearch_dsl_drf.viewsets import ElasticsearchModelViewSet
+from .documents import ProjectDocument
 load_dotenv()
+
 
 
 CLIENT_ID=os.environ.get("CLIENT_ID")
@@ -467,6 +470,10 @@ class CardSubtaskViewSet(viewsets.ModelViewSet):
          return Response("DONE")
       return Response("NO ACCESS")
 
+
+# class ProjectViewSet(ElasticsearchModelViewSet):
+#     document = ProjectDocument
+#     serializer_class = ProjectListModelSerializer
    
    
 
