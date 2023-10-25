@@ -7,31 +7,43 @@ import BackendClient from "../../back_client";
 //import ImageIcon from "@material-ui/icons";
 
 
+const buttonStyle = {
+  backgroundColor: 'transparent',
+  border: '2px solid #2196F3', // Border color
+  color:"white",
+  boxShadow: '0 0 10px rgba(33, 150, 243, 0.5)', // Glowing effect
+  transition: 'box-shadow 0.3s', // Animation duration
+
+  '&:hover': {
+    boxShadow: '0 0 20px rgba(33, 150, 243, 0.8)', // Increase glow on hover
+  },
+  width:500,
+  fontSize:20,
+  fontWeight:"bold",
+  alignSelf:'center',
+  marginLeft:"20px",
+};
+
+const title={
+  fontSize:"100px",
+  fontFamily:"cursive",
+  color:"lightBlue"
+}
+
 
 function LoginRequest(){
-  window.location.href=`${BACKEND_HOST}/web_api/login`;
-  
+  window.location.href=`${BACKEND_HOST}login`;
 }
 
 function LoginButton(){
-    console.log(omnilog)
+    // console.log(omnilog)
    return (
-    <Button
-    sx={{
-       width:500,
-       fontSize:20,
-       fontWeight:"bold",
-       alignSelf:'center',
-       borderWidth:"3px",
-       boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.2)',
-       background: 'linear-gradient(to bottom, #fff, #e5e5e5)',
-       transition: 'background-color 0.3s ease', // Transition effect
-          '&:hover': {
-            background: 'linear-gradient(to bottom, #f1f1f1, #e0e0e0)', // Hover effect
-         },
-    }}
-    variant="outlined"
-    color="primary"
+    <div sx={{display:"flex",flexDirection:"column",width:"100vw",height:"100vh"}}>
+     <h1 style={title}>PROJECTION</h1>
+     <Button
+    sx={buttonStyle}
+    variant="contained"
+    color="grey"
     startIcon={
       <IconButton edge="start">
         <img src={omnilog} alt="My Image" width="50px" height="50px"/>
@@ -39,30 +51,8 @@ function LoginButton(){
     }
     onClick={LoginRequest}
   >Login With Omniport</Button>
+  </div>
    )
 }
 export default LoginButton;
 
-{/* <Button
-        sx={{
-           width:500,
-           fontSize:20,
-           fontWeight:"bold",
-           alignSelf:'center',
-           borderWidth:"3px",
-           boxShadow: '0 3px 5px 2px rgba(0, 0, 0, 0.2)',
-           background: 'linear-gradient(to bottom, #fff, #e5e5e5)',
-           transition: 'background-color 0.3s ease', // Transition effect
-              '&:hover': {
-                background: 'linear-gradient(to bottom, #f1f1f1, #e0e0e0)', // Hover effect
-             },
-        }}
-        variant="outlined"
-        color="primary"
-        startIcon={
-          <IconButton edge="start">
-            <img src={omnilog} alt="My Image" width="50px" height="50px"/>
-          </IconButton>
-        }
-        onClick={LoginRequest}
-      >Login With Omniport</Button> */}

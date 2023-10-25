@@ -11,6 +11,7 @@ import Show_member from '../components/projects/members';
 import getNonmembers from '../requests/get_n_mem';
 import Assignees from '../components/cards/to_assign';
 import Card_Form from '../components/cards/cardForm';
+import CheckLogin from '../check_login';
 
 
 export default function ProjectBoard(){
@@ -22,6 +23,7 @@ export default function ProjectBoard(){
     req(dispatch,pid)
     useEffect(()=>{
         req2(dispatch,pid)
+        CheckLogin(dispatch)
     })
     return (
        <div style={{display:"flex",flexDirection:"column",height:"100vh",alignItems:"center"}}>

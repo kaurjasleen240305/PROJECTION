@@ -45,21 +45,26 @@ def check_login(request):
  #   print(request.COOKIES['sessionid'])
     print(request.COOKIES)
     if "sessionid" in request.COOKIES:
-       user_info={
-          "username":request.session.get("username"),
-          "name":request.session.get("name"),
-          "email":request.session.get("email"),
-          "is_member":request.session.get("is_member"),
-          "enrolment_no":request.session.get("enrolment_no"),
-          "year":request.session.get("year"),
-          "is_admin":request.session.get("is_superuser")
-       } 
-       content={"Logged_In":True,"user":user_info}
+       username=request.session.get("username")
+      #  user_info={
+      #     "username":request.session.get("username"),
+      #     "name":request.session.get("name"),
+      #     "email":request.session.get("email"),
+      #     "is_member":request.session.get("is_member"),
+      #     "enrolment_no":request.session.get("enrolment_no"),
+      #     "year":request.session.get("year"),
+      #     "is_admin":request.session.get("is_superuser")
+      #  } 
+       user_info=User.objects.get(username=username)
+       serializer=UserSerializer(user_info)
+       data=serializer.data
+       content={"Logged_In":True,"data":data}
+       return Response(content)
     return Response(content)
 
 
 
-def auth(username,enrolment_number, name, year, email,is_Member ):
+def auth(username,enrolment_number, name, year, email,is_Member,is_superuser ):
     try:
         user = User.objects.get(username=username)
         print("Exists")
@@ -68,7 +73,7 @@ def auth(username,enrolment_number, name, year, email,is_Member ):
     except User.DoesNotExist:
         print("Not Exists")
         User.objects.create(username=username, name=name, email=email,
-                            year=year, enrolment_no=enrolment_number,is_Member=is_Member)
+                            year=year, enrolment_no=enrolment_number,is_Member=is_Member,is_superuser=is_superuser)
         #print("Created"
         user = User.objects.get(username=username)
         return user
@@ -107,6 +112,7 @@ def get_token(request):
     year=user_info['student']['currentYear']
     email=user_info['contactInformation']['emailAddress']
     enrolment_no=user_info['student']['enrolmentNumber']
+    is_superuser=False
 
 
     is_Member=False
@@ -116,21 +122,24 @@ def get_token(request):
            break
     if (is_Member==True ):
       try:
-         user=auth(username,enrolment_no,name,year,email,is_Member)
+         user=auth(username,enrolment_no,name,year,email,is_Member,is_superuser=is_superuser)
          print(user)
       except:
          return Response("unable to create user")
       try:
-        login(request,user)
-        request.session['username'] = username
-        request.session['name'] = name
-        request.session['year'] = year
-        request.session['email'] = email
-        request.session['enrolment_no'] = enrolment_no
-        request.session['is_Member'] = is_Member
-        request.session['is_admin']=user.is_superuser
-        print(FRONTEND_HOST)
-        return redirect(f'{FRONTEND_HOST}dashboard')
+       # if(user.is_active):
+         login(request,user)
+         request.session['username'] = username
+         request.session['name'] = name
+         request.session['year'] = year
+         request.session['email'] = email
+         request.session['enrolment_no'] = enrolment_no
+         request.session['is_Member'] = is_Member
+         request.session['is_admin']=user.is_superuser
+         print(FRONTEND_HOST)
+         return redirect(f'{FRONTEND_HOST}dashboard')
+        
+       # return redirect(f'{FRONTEND_HOST}login')
   #      return Response("LOGGED IN")
       except:
          return Response("Not logged in successfully")
@@ -196,8 +205,8 @@ class is_member_admin_creator_card(permissions.BasePermission):
 class UserViewSet(viewsets.ModelViewSet):
      queryset=User.objects.all()
      serializer_class=UserSerializer
-     authentication_classes=[SessionAuthentication]
-     permission_classes=[IsAuthenticated]
+   #   authentication_classes=[SessionAuthentication]
+   #   permission_classes=[IsAuthenticated]
      lookup_field='username'
 
      def list(self, request):
@@ -232,8 +241,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class ProjectViewSet(viewsets.ModelViewSet):
    queryset=Project.objects.all()
    serializer_class=ProjectModelSerializer
-   authentication_classes=[SessionAuthentication]
-   permission_classes=[IsAuthenticated]
+   # authentication_classes=[SessionAuthentication]
+   # permission_classes=[IsAuthenticated]
    
 
    def list(self, request, *args, **kwargs):
@@ -317,8 +326,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ListViewSet(viewsets.ModelViewSet):
      queryset=List.objects.all()
      serializer_class=ListModelSerializer
-     authentication_classes=[SessionAuthentication]
-     permission_classes=[IsAuthenticated]
+   #   authentication_classes=[SessionAuthentication]
+   #   permission_classes=[IsAuthenticated]
      #def get_permission(self):
      #   if self.action in ['create','destroy','update']:
      #      obj=self.get_object()
@@ -353,8 +362,8 @@ class ListViewSet(viewsets.ModelViewSet):
 class CardViewSet(viewsets.ModelViewSet):
    queryset=Card.objects.all()
    serializer_class=CardSerializer
-   authentication_classes=[SessionAuthentication]
-   permission_classes=[IsAuthenticated]
+   # authentication_classes=[SessionAuthentication]
+   # permission_classes=[IsAuthenticated]
    
    def create(self,request,*args,**kwargs):
        current_user=User.objects.get(username=(request.session.get("username")))
@@ -375,6 +384,15 @@ class CardViewSet(viewsets.ModelViewSet):
           return Response(serializer.errors,status=status.HTTP_404_NOT_FOUND)
        return Response({"message":"NO ACCESS TO ADD CARD"})
    
+   @action(detail=True, methods=['post'])
+   def dash_cards(self,request,*args,**kwargs):
+      current_user=User.objects.get(username=(request.session.get("username")))
+      cards=(self.queryset).card_tasks.filter(assignees=current_user)
+      serializer=CardSerializer(cards,many=True)
+      return Response(serializer.data)
+
+
+   
    # def retrieve(self,request,pk):
    #    try:
    #       card = Card.objects.get(pk=pk)
@@ -387,8 +405,8 @@ class CardViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
       queryset=Card.objects.all()
       serializer_class=CommentCreateSerializer
-      authentication_classes=[SessionAuthentication]
-      permission_classes=[IsAuthenticated]
+      # authentication_classes=[SessionAuthentication]
+      # permission_classes=[IsAuthenticated]
 
       def create(self,request,*args,**kwargs):
          current_user=User.objects.get(username=(request.session.get("username")))
@@ -404,8 +422,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 class CardSubtaskViewSet(viewsets.ModelViewSet):
    queryset=Card_Subtask.objects.all()
    serializer_class=Card_subtaskSerializer
-   authentication_classes=[SessionAuthentication]
-   permission_classes=[IsAuthenticated]
+   # authentication_classes=[SessionAuthentication]
+   # permission_classes=[IsAuthenticated]
 
    def create(self,request,*args,**kwargs):
       current_user=User.objects.get(username=(request.session.get("username")))

@@ -25,8 +25,8 @@ export default function Dashboard(){
     const projects=useSelector((state)=>state.project.projectData)
     useEffect(()=>{
         CheckLogin(dispatch);
-        request1(dispatch);
-        getallUsers_req(dispatch);
+        // request1(dispatch);
+        // getallUsers_req(dispatch);
     },[dispatch]);
     return (
       <div sx={{position:"relative"}}>
