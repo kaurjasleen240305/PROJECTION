@@ -12,6 +12,7 @@ import getNonmembers from '../requests/get_n_mem';
 import Assignees from '../components/cards/to_assign';
 import Card_Form from '../components/cards/cardForm';
 import CheckLogin from '../check_login';
+import ProjectForm from "../components/projects/projectForm";
 
 
 export default function ProjectBoard(){
@@ -34,6 +35,7 @@ export default function ProjectBoard(){
            sx={{position:"absolute",
         }}
         />
+        <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
         <Show_member/>
         <Card_Form/>
         <Assignees/>

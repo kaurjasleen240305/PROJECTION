@@ -16,7 +16,7 @@ from rest_framework.authentication import SessionAuthentication
 from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer
 from rest_framework import viewsets,status,permissions
 # from django_elasticsearch_dsl_drf.viewsets import ElasticsearchModelViewSet
-from .documents import ProjectDocument
+# from .documents import ProjectDocument
 load_dotenv()
 
 
@@ -243,6 +243,11 @@ class ProjectViewSet(viewsets.ModelViewSet):
    serializer_class=ProjectModelSerializer
    # authentication_classes=[SessionAuthentication]
    # permission_classes=[IsAuthenticated]
+   def get_object(self):
+        # Retrieve the object based on the primary key from the URL
+        print(self.kwargs['pk'])
+        obj = Project.objects.get(pk=self.kwargs['pk'])
+        return obj
    
 
    def list(self, request, *args, **kwargs):
@@ -261,8 +266,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
    
    def create(self,request,*args,**kwargs):
       copy=request.data.copy()
-      copy["creator"]=request.session.get("username")
-      print(request.session.get("session_id"))
+      creator=User.objects.get(username=request.session.get("username"))
+      copy["creator"]=creator
+      print(creator)
       serializer=Procreser(data=copy)
       if serializer.is_valid():
          serializer.save()
@@ -275,6 +281,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
    def destroy(self,request,*args,**kwargs):
       ins=self.get_object()
+      print(ins)
       cond1=request.session.get("is_superuser")
       cond2=(ins.creator==(request.session.get("username")))
       cond3=ins.is_member(username=request.session.get("username"))
@@ -286,8 +293,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
    @action(detail=True,methods=["POST",])
    def add_member(self,request,*args,**kwargs):
       project_instance=self.get_object()
+      print(project_instance.creator)
+      print("hello")
       username=request.data['username']
+      print(username)
       user=User.objects.get(username=username)
+      print("hello")
+      print(project_instance.creator.username)
+      # print("hello")
+      print(request.session.get("username"))
       cond2=(project_instance.creator.username==(request.session.get("username")))
       if(cond2):
          project_instance.project_members.add(user)
