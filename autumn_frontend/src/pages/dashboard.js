@@ -10,6 +10,7 @@ import PageDrawer from "../components/Drawer";
 import ProjectForm from "../components/projects/projectForm";
 import getCard from "../requests/getCard";
 import getallUsers from "../requests/allUsers";
+import ProfileImage from "../components/users/profile_image";
 // import getallUsers from "../requests/allUsers";
 
 
@@ -32,6 +33,7 @@ export default function Dashboard(){
       <div sx={{position:"relative"}}>
         <PageDrawer sx={{position:"absolute"}} component={Project_Title}/>
         <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
+        <ProfileImage sx={{position:"absolute",zIndex:"21"}}/>
       </div>
     )
 

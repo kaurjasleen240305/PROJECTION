@@ -13,6 +13,7 @@ import Assignees from '../components/cards/to_assign';
 import Card_Form from '../components/cards/cardForm';
 import CheckLogin from '../check_login';
 import ProjectForm from "../components/projects/projectForm";
+import ProfileImage from '../components/users/profile_image';
 
 
 export default function ProjectBoard(){
@@ -38,6 +39,7 @@ export default function ProjectBoard(){
         <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
         <Show_member/>
         <Card_Form/>
+        <ProfileImage/>
         <Assignees/>
         <ListForm/>
        </div>

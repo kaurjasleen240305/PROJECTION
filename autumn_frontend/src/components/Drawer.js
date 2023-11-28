@@ -24,8 +24,9 @@ import user_image from "../assets/user_image.png";
 import Avatar from '@mui/material/Avatar';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { openPro,closePro,setSelectedFile } from '../features/profileDiv';
+import profileDiv, { openPro,closePro,setSelectedFile } from '../features/profileDiv';
 import update_profile_image from '../requests/update_profile';
+import { openProfileImage } from '../features/project_formSlice';
 
 
 const drawerWidth=240;
@@ -93,6 +94,7 @@ export default function PageDrawer(props){
 
   const username=useSelector((state)=>state.user.username)
   let profile_image=useSelector((state)=>state.user.profile_pic)
+  console.log(profile_image)
   if(profile_image==null){
     profile_image=user_image;
     console.log("NULLLLLL")
@@ -156,6 +158,10 @@ useEffect(() => {
   const handleLabelClick = () => {
     fileInputRef.current.click();
   };
+  let handleProfile=()=>{
+    console.log("HELLLLL")
+    dispatch(openProfileImage())
+  }
 
 
   
@@ -182,7 +188,7 @@ useEffect(() => {
            <Avatar src={profile_image} sx={{ width: 50, height: 50,position:"absolute",zIndex:-1}}/>
            <CameraAltIcon sx={{zIndex:20,position:"absolute",marginTop:"40px",color:"black"}} onClick={handleProfileDiv}/>
            {isProDivopen && <div style={{maxWidth:"15vw",paddingRight:"5px",paddingLeft:"5px",display:"flex",flexDirection:"column",backgroundColor:"black",position:"absolute",zIndex:20,marginTop:"60px",borderRadius:"5px",marginLeft:"-120px",color:"white"}}>
-               <p>See profile picture</p>
+               <p onClick={handleProfile}>See profile picture</p>
                <div>
                  <p>Choose Profile Picture</p>
                  <input type="file" onChange={handleFileChange} name="fileInput" />
