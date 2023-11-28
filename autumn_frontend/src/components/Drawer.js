@@ -23,6 +23,7 @@ import getallUsers from "../requests/allUsers";
 import user_image from "../assets/user_image.png";
 import Avatar from '@mui/material/Avatar';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import { openPro,closePro } from '../features/profileDiv';
 
 
 
@@ -83,6 +84,7 @@ export default function PageDrawer(props){
   const Render=props.component
   const navigate=useNavigate();
   let getallUser=getallUsers()
+  let isProDivopen=useSelector((state)=>state.profile_div.isOpen)
   console.log(Render)
 
   const username=useSelector((state)=>state.user.username)
@@ -110,6 +112,15 @@ export default function PageDrawer(props){
 const handleAddProject=()=>{
     dispatch(openForm())
     console.log(x)
+}
+
+const handleProfileDiv=()=>{
+    if(isProDivopen){
+      dispatch(closePro());
+    }
+    else{
+      dispatch(openPro());
+    }
 }
 
 let handleUsers=()=>{
@@ -142,8 +153,15 @@ useEffect(() => {
           <Typography variant="h6" noWrap component="div" sx={{marginRight:"70%"}}>
             Welcome {username}
           </Typography>
-          <Button variant="contained" color="secondary" onClick={handleUsers} sx={{marginRight:"20px"}}>ALL USERS</Button>
-          <Avatar src={profile_image} sx={{ width: 50, height: 50}}/>
+          <Button variant="contained" onClick={handleUsers} sx={{marginRight:"20px",backgroundColor:"grey"}}>ALL USERS</Button>
+          <div style={{display:"flex",marginTop:"-45px",flexDirection:"column"}}>
+           <Avatar src={profile_image} sx={{ width: 50, height: 50,position:"absolute",zIndex:-1}}/>
+           <CameraAltIcon sx={{zIndex:20,position:"absolute",marginTop:"40px",color:"black"}} onClick={handleProfileDiv}/>
+           {isProDivopen && <div style={{maxWidth:"15vw",paddingRight:"5px",paddingLeft:"5px",display:"flex",flexDirection:"column",backgroundColor:"red",position:"absolute",zIndex:20,marginTop:"60px",borderRadius:"5px",marginLeft:"-120px"}}>
+               <p>See profile picture</p>
+               <p>Change profile picture</p>
+           </div>}
+          </div>
           {/* <img src={profile_image}/> */}
           
         </Toolbar>

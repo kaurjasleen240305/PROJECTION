@@ -10,6 +10,7 @@ import commentReducer from "./features/commentSlice";
 import projectinfoReducer from "./features/project_info"
 import memberReducer from "./features/open_memSlice"
 import allUserReducer from "./features/all_users"
+import profileReducer from "./features/profileDiv"
 
 
 
@@ -25,6 +26,7 @@ var rootreducer={
    project_info:projectinfoReducer,
    project_members:memberReducer,
    all_users:allUserReducer,
+   profile_div:profileReducer,
 
 }
 const store=configureStore({
