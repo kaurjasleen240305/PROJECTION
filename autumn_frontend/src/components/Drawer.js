@@ -20,8 +20,9 @@ import getprojects from '../requests/getprojects';
 import GroupIcon from '@material-ui/icons/Group';
 import { useNavigate } from 'react-router-dom';
 import getallUsers from "../requests/allUsers";
-
-
+import user_image from "../assets/user_image.png";
+import Avatar from '@mui/material/Avatar';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 
 
@@ -85,6 +86,17 @@ export default function PageDrawer(props){
   console.log(Render)
 
   const username=useSelector((state)=>state.user.username)
+  let profile_image=useSelector((state)=>state.user.profile_pic)
+  if(profile_image==null){
+    profile_image=user_image;
+    console.log("NULLLLLL")
+  }
+  else{
+    console.log(profile_image)
+    profile_image='http://localhost:8000'+profile_image
+    console.log(profile_image)
+    console.log("whfaaaaa")
+  }
   console.log(username)
   let is_open=useSelector((state)=>state.drawer.isOpen)
   let x=useSelector((state)=>state.project_form.isOpen)
@@ -127,10 +139,13 @@ useEffect(() => {
         >
             <MenuIcon/>
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{marginRight:"75%"}}>
+          <Typography variant="h6" noWrap component="div" sx={{marginRight:"70%"}}>
             Welcome {username}
           </Typography>
-          <Button variant="contained" color="secondary" onClick={handleUsers}>ALL USERS</Button>
+          <Button variant="contained" color="secondary" onClick={handleUsers} sx={{marginRight:"20px"}}>ALL USERS</Button>
+          <Avatar src={profile_image} sx={{ width: 50, height: 50}}/>
+          {/* <img src={profile_image}/> */}
+          
         </Toolbar>
       </AppBar>
       <Drawer
