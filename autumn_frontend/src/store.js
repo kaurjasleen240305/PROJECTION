@@ -11,6 +11,7 @@ import projectinfoReducer from "./features/project_info"
 import memberReducer from "./features/open_memSlice"
 import allUserReducer from "./features/all_users"
 import profileReducer from "./features/profileDiv"
+import dashReducer from "./features/dash_slice"
 
 
 
@@ -27,7 +28,7 @@ var rootreducer={
    project_members:memberReducer,
    all_users:allUserReducer,
    profile_div:profileReducer,
-
+   dashReducer:dashReducer,
 }
 const store=configureStore({
     reducer:rootreducer,

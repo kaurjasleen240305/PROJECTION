@@ -334,9 +334,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
       non_team_members = User.objects.exclude(project__in=[project_instance])
       serializer=UserSerializer(non_team_members,many=True)
       return Response(serializer.data)
-
-
    
+   @action(detail=True,methods=["GET",])
+   def project_loggedIn_user(self,request,*args,**kwargs):
+      current_user=User.objects.get(username=(request.session.get("username")))
+      projects=Project.objects.filter(project_members=current_user)
+      serializer=ProjectListModelSerializer(projects,many=True)
+      return Response(serializer.data)
+
+
 class ListViewSet(viewsets.ModelViewSet):
      queryset=List.objects.all()
      serializer_class=ListModelSerializer
@@ -401,7 +407,7 @@ class CardViewSet(viewsets.ModelViewSet):
    @action(detail=True, methods=['post'])
    def dash_cards(self,request,*args,**kwargs):
       current_user=User.objects.get(username=(request.session.get("username")))
-      cards=(self.queryset).card_tasks.filter(assignees=current_user)
+      cards=Card.objects.filter(card_tasks__assignees=current_user)
       serializer=CardSerializer(cards,many=True)
       return Response(serializer.data)
 
@@ -501,6 +507,13 @@ class CardSubtaskViewSet(viewsets.ModelViewSet):
          sub_task.save()
          return Response("DONE")
       return Response("NO ACCESS")
+   
+   @action(detail=True, methods=['get'])
+   def card_tasks_loggedIn(self,request,*args,**kwargs):
+      current_user=User.objects.get(username=(request.session.get("username")))
+      cards=Card_Subtask.objects.filter(assignees=current_user)
+      serializer=Card_subtaskSerializer(cards,many=True)
+      return Response(serializer.data)
 
 
 # class ProjectViewSet(ElasticsearchModelViewSet):

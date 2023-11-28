@@ -21,6 +21,8 @@ urlpatterns = [
     path('get_token/',views.get_token),
     path('login_password',views.login_password),
     path('logout',views.logout_pass),
+    path('loggedIn_projects/',views.ProjectViewSet.as_view({"get":"project_loggedIn_user"},name="project_loggedIn_user")),
+    path('loggedIn_cards/',views.CardSubtaskViewSet.as_view({"get":"card_tasks_loggedIn"},name="card_loggedIn_user")),
     path('projects/<int:pk>/add_member',views.ProjectViewSet.as_view({'post':"add_member"}),name='project_add_member'),
     path('projects/<int:pk>/remove_member',views.ProjectViewSet.as_view({'post':"remove_member"}),name='project_remove_member'),
     path('card_sub/<int:pk>/update_assignee/',views.ProjectViewSet.as_view({'post':"update_assignee"}),name='update_assignee'),
@@ -35,3 +37,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+#project_loggedIn_user
+#card_tasks_loggedIn
