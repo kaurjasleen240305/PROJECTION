@@ -5,6 +5,7 @@ const profileSlice=createSlice({
    name:"profileDiv",
    initialState:{
        isOpen:false,
+       selectedFile:null,
     },
     reducers:{
         openPro:(state)=>{
@@ -13,11 +14,14 @@ const profileSlice=createSlice({
         closePro:(state)=>{
             state.isOpen=false
         },
+        setSelectedFile:(state,action)=>{
+            state.selectedFile=action.payload
+        }
         
     }
 })
 
 
 
-export const {openPro,closePro}=profileSlice.actions;
+export const {openPro,closePro,setSelectedFile}=profileSlice.actions;
 export default profileSlice.reducer;

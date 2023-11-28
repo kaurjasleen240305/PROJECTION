@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useRef } from 'react';
 import { Drawer, Toolbar } from '@mui/material';
 import ProjectList from '../extras/object_to_list';
 import { styled, useTheme } from '@mui/material/styles';
@@ -23,7 +23,8 @@ import getallUsers from "../requests/allUsers";
 import user_image from "../assets/user_image.png";
 import Avatar from '@mui/material/Avatar';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { openPro,closePro } from '../features/profileDiv';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { openPro,closePro,setSelectedFile } from '../features/profileDiv';
 
 
 
@@ -83,8 +84,10 @@ export default function PageDrawer(props){
   const request2=getprojects()
   const Render=props.component
   const navigate=useNavigate();
+  const fileInputRef = useRef(null);
   let getallUser=getallUsers()
   let isProDivopen=useSelector((state)=>state.profile_div.isOpen)
+  let selectedFile=useSelector((state)=>state.profile_div.selectedFile)
   console.log(Render)
 
   const username=useSelector((state)=>state.user.username)
@@ -134,6 +137,20 @@ useEffect(() => {
     request2(dispatch)
   }, [dispatch]);
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    dispatch(setSelectedFile(file));
+  };
+
+  const handleUpload = () => {
+    
+  };
+
+  const handleLabelClick = () => {
+    fileInputRef.current.click();
+  };
+
+
   
   
   return (
@@ -157,9 +174,12 @@ useEffect(() => {
           <div style={{display:"flex",marginTop:"-45px",flexDirection:"column"}}>
            <Avatar src={profile_image} sx={{ width: 50, height: 50,position:"absolute",zIndex:-1}}/>
            <CameraAltIcon sx={{zIndex:20,position:"absolute",marginTop:"40px",color:"black"}} onClick={handleProfileDiv}/>
-           {isProDivopen && <div style={{maxWidth:"15vw",paddingRight:"5px",paddingLeft:"5px",display:"flex",flexDirection:"column",backgroundColor:"red",position:"absolute",zIndex:20,marginTop:"60px",borderRadius:"5px",marginLeft:"-120px"}}>
+           {isProDivopen && <div style={{maxWidth:"15vw",paddingRight:"5px",paddingLeft:"5px",display:"flex",flexDirection:"column",backgroundColor:"black",position:"absolute",zIndex:20,marginTop:"60px",borderRadius:"5px",marginLeft:"-120px",color:"white"}}>
                <p>See profile picture</p>
-               <p>Change profile picture</p>
+               <label onClick={handleLabelClick}>
+                 <p>Choose Profile Picture <CloudUploadIcon onClick={handleUpload} style={{ cursor: 'pointer', marginTop: '0px' }} /></p>
+                 <input type="file" onChange={handleFileChange} ref={fileInputRef} style={{ display: 'none' }} />
+              </label>
            </div>}
           </div>
           {/* <img src={profile_image}/> */}
