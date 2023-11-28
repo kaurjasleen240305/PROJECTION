@@ -14,8 +14,8 @@ const profileSlice=createSlice({
         closePro:(state)=>{
             state.isOpen=false
         },
-        setSelectedFile:(state,action)=>{
-            state.selectedFile=action.payload
+        setSelectedFile:(state,file)=>{
+            state.selectedFile=file
         }
         
     }

@@ -1,4 +1,4 @@
-import React, { useEffect,useRef } from 'react';
+import React, { useEffect,useRef,useState } from 'react';
 import { Drawer, Toolbar } from '@mui/material';
 import ProjectList from '../extras/object_to_list';
 import { styled, useTheme } from '@mui/material/styles';
@@ -25,7 +25,7 @@ import Avatar from '@mui/material/Avatar';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { openPro,closePro,setSelectedFile } from '../features/profileDiv';
-
+import update_profile_image from '../requests/update_profile';
 
 
 const drawerWidth=240;
@@ -86,8 +86,9 @@ export default function PageDrawer(props){
   const navigate=useNavigate();
   const fileInputRef = useRef(null);
   let getallUser=getallUsers()
+  let update_profile=update_profile_image();
   let isProDivopen=useSelector((state)=>state.profile_div.isOpen)
-  let selectedFile=useSelector((state)=>state.profile_div.selectedFile)
+  const [selectedFile, setSelectedFile] = useState(null);
   console.log(Render)
 
   const username=useSelector((state)=>state.user.username)
@@ -139,11 +140,17 @@ useEffect(() => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    dispatch(setSelectedFile(file));
+    setSelectedFile(file);
   };
 
-  const handleUpload = () => {
-    
+  const handleUpload =(e) => {
+       e.preventDefault();
+       console.log("heloooo")
+       const formData = {"profile_pic":selectedFile};
+      //  formData.append('profile_pic',selectedFile);  
+      //  formData.append('fileName', selectedFile.name);
+       console.log(formData)
+       update_profile(dispatch,formData,username)
   };
 
   const handleLabelClick = () => {
@@ -176,10 +183,11 @@ useEffect(() => {
            <CameraAltIcon sx={{zIndex:20,position:"absolute",marginTop:"40px",color:"black"}} onClick={handleProfileDiv}/>
            {isProDivopen && <div style={{maxWidth:"15vw",paddingRight:"5px",paddingLeft:"5px",display:"flex",flexDirection:"column",backgroundColor:"black",position:"absolute",zIndex:20,marginTop:"60px",borderRadius:"5px",marginLeft:"-120px",color:"white"}}>
                <p>See profile picture</p>
-               <label onClick={handleLabelClick}>
-                 <p>Choose Profile Picture <CloudUploadIcon onClick={handleUpload} style={{ cursor: 'pointer', marginTop: '0px' }} /></p>
-                 <input type="file" onChange={handleFileChange} ref={fileInputRef} style={{ display: 'none' }} />
-              </label>
+               <div>
+                 <p>Choose Profile Picture</p>
+                 <input type="file" onChange={handleFileChange} name="fileInput" />
+                 <button onClick={handleUpload}>Upload</button>
+               </div>
            </div>}
           </div>
           {/* <img src={profile_image}/> */}
