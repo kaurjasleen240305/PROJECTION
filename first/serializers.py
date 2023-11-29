@@ -63,6 +63,11 @@ class CardSubtaskCreateSerializer(serializers.ModelSerializer):
         model=Card_Subtask
         fields=['task_name','card_id']
 
+class CardSubtask_Take_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=Card_Subtask
+        fields=['task_name','card_id']
+
 class Card_subtaskSerializer(serializers.ModelSerializer):
     card_id=Card_Serializer_for_task()
     class Meta:

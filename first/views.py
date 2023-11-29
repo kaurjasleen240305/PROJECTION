@@ -13,7 +13,7 @@ from django.contrib.auth import login
 from django.contrib.auth import authenticate,logout
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
-from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer
+from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer,CardSubtask_Take_Serializer
 from rest_framework import viewsets,status,permissions
 # from django_elasticsearch_dsl_drf.viewsets import ElasticsearchModelViewSet
 # from .documents import ProjectDocument
@@ -450,12 +450,12 @@ class CardSubtaskViewSet(viewsets.ModelViewSet):
       if(current_user.is_superuser):
          cond2=True
       if(cond1 or cond2):
-         serializer=CardSubtaskCreateSerializer(data=request.data)
          print(request.data)
+         serializer=CardSubtask_Take_Serializer(data=(request.data))
          if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-         return Response("Not done")
+           serializer.save()
+           return Response(serializer.data)
+         return Response(serializer.errors)
       return Response("NO ACCESS")
    
    def update(self,request,*args,**kwargs):
