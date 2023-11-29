@@ -13,6 +13,7 @@ import getallUsers from "../requests/allUsers";
 import ProfileImage from "../components/users/profile_image";
 import setdashCards from "../requests/setdashCards";
 import setdashProjects from "../requests/setdashProjects";
+import DashProjects from "../components/projects/dash_projects";
 // import getallUsers from "../requests/allUsers";
 
 
@@ -22,22 +23,18 @@ export default function Dashboard(){
     const dispatch=useDispatch();
     const request1=getprojects();
     const getallUsers_req=getallUsers();
-    const getdashProjects=setdashCards();
-    const getdashCards=setdashCards();
 
     getprojects(dispatch);
     const username=useSelector((state)=>state.user.username)
     const projects=useSelector((state)=>state.project.projectData)
     useEffect(()=>{
         CheckLogin(dispatch);
-        getdashCards(dispatch);
-        getdashProjects(dispatch);
         // request1(dispatch);
         // getallUsers_req(dispatch);
     },[dispatch]);
     return (
       <div sx={{position:"relative"}}>
-        <PageDrawer sx={{position:"absolute"}} component={Project_Title}/>
+        <PageDrawer sx={{position:"absolute"}} component={DashProjects}/>
         <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
         <ProfileImage sx={{position:"absolute",zIndex:"21"}}/>
       </div>

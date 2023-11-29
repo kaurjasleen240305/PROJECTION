@@ -9,7 +9,7 @@ const setdashCards=()=>{
             return res.data;
         }).then((data)=>{
             dispatch(setCardList(data))
-            console.log("DONENEFERGGREGRDG")
+            console.log(data)
         })
     };
 };

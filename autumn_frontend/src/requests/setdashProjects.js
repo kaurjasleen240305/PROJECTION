@@ -9,7 +9,7 @@ const setdashProjects=()=>{
             return res.data;
         }).then((data)=>{
             dispatch(setProjectList(data))
-            console.log("DONENEFERGGREGRDG")
+            console.log(data)
         })
     };
 };

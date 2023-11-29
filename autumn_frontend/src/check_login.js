@@ -3,11 +3,12 @@ import { setUserData } from "./features/userSlice";
 import { FRONTEND_HOST } from "./hosts";
 import getprojects from "./requests/getprojects";
 import getallUsers from "./requests/allUsers";
+import setdashCards from "./requests/setdashCards";
+import setdashProjects from "./requests/setdashProjects";
 
 
-
-let req1=getprojects()
-let req2=getallUsers()
+let req3=setdashCards()
+let req4=setdashProjects()
 
 export default function CheckLogin(dispatch){
  //   console.log(BackendClient)
@@ -20,8 +21,8 @@ export default function CheckLogin(dispatch){
         }
         else{
             dispatch(setUserData(res.data.data))
-            //  req1(dispatch)
-            //  req2(dispatch)
+            req3(dispatch)
+            req4(dispatch)
         }
     })
 }

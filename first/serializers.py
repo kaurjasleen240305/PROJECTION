@@ -36,17 +36,38 @@ class CommentSendSerializer(serializers.ModelSerializer):
         fields=['sender','comment']
 
 
-class Card_subtaskSerializer(serializers.ModelSerializer):
+
+
+class ProjectNameserializer():
     class Meta:
-        model=Card_Subtask
-        fields=['task_name','assignees','is_complete','card_id','pk']
+        model=Project
+        fields=['project_name']
+
+
+class ListSimpleSerializer(serializers.ModelSerializer):
+    pid=ProjectNameserializer()
+    class Meta:
+        model=List
+        fields=['pid','list_name']
+
+class Card_Serializer_for_task(serializers.ModelSerializer):
+    lid=ListSimpleSerializer()
+    class Meta:
+        model=Card
+        fields=['lid']
+
 
 class CardSubtaskCreateSerializer(serializers.ModelSerializer):
+    card_id=Card_Serializer_for_task()
     class Meta:
         model=Card_Subtask
         fields=['task_name','card_id']
 
-
+class Card_subtaskSerializer(serializers.ModelSerializer):
+    card_id=Card_Serializer_for_task()
+    class Meta:
+        model=Card_Subtask
+        fields=['task_name','assignees','is_complete','card_id','pk']
 
 
 
