@@ -37,11 +37,11 @@ export default function ProjectBoard(){
         }}
         />
         <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
+        <ListForm sx={{position:"absolute",zIndex:"21"}}/>
         <Show_member/>
         <Card_Form/>
         <ProfileImage/>
         <Assignees/>
-        <ListForm/>
        </div>
     )
 }

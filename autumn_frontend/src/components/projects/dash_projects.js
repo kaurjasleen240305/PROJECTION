@@ -9,7 +9,7 @@ export default function DashProjects(){
     return(
         <div style={{display:"flex",flexDirection:"column",padding:"30px",overflowY:true}}>
             {(projects).map((project)=>(
-            <div style={{width:"100%",backgroundColor:"black",color:"white",display:"flex",flexDirection:"column",padding:"10px",alignItems:"center",marginBottom:"10px"}}>
+            <div style={{width:"100%",border:"5px solid bisque",borderRadius:"16px",backgroundColor:"black",color:"white",display:"flex",flexDirection:"column",padding:"10px",alignItems:"center",marginBottom:"10px"}}>
                   <h1>{project.project_name}</h1>
                   <div style={{display:"flex"}}>
                    {(card_tasks).map((card)=>(

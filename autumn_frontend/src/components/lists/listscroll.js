@@ -41,6 +41,7 @@ export default function ListScroll(){
     let is_open=useSelector((state)=>state.drawer.isOpen)
     let project_opened=useSelector((state)=>state.project_info.project_info)
     const handleListClick=()=>{
+        console.log("mjernjnergnjier")
         dispatch(openListForm());
     }
    
@@ -72,8 +73,12 @@ export default function ListScroll(){
       }, [dispatch, pid]);
     
     const req_lists=useSelector((state)=>state.lists.listData) 
-    console.log(req_lists)
-        
+    console.log(typeof(req_lists));
+    console.log("TYPE OF LIST")
+    
+    if(req_lists==null){
+      return null;
+    }
    return(
     <>
      <div style={{marginTop:"0px",marginBottom:"30px",marginLeft:"60px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -95,7 +100,7 @@ export default function ListScroll(){
         <Button variant="contained" color="primary" sx={{width:"200px",marginLeft:"50px",marginBottom:"30px",}} onClick={()=>handleAddCard(item.pk)}>ADD CARD</Button>
        </div>
     ))}
-    <div style={{width:"200px", height:"50px",backgroundColor:"gray",borderRadius:"8px",display:"flex",alignItems:"center",marginRight:"20px"}}>
+    <div style={{paddingRight:"50px",paddingLeft:"20px", height:"50px",backgroundColor:"gray",borderRadius:"8px",display:"flex",alignItems:"center",marginRight:"20px"}}>
        <AddIcon sx={{alignSelf:"center",backgroundColor:"lightgray",borderRadius:"12px",cursor: 'pointer',marginRight:"20px",marginLeft:"5px"}} onClick={handleListClick}/>
        <h3 sx={{color:"white"}}>ADD LIST</h3>
      </div>

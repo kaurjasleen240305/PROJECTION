@@ -54,7 +54,7 @@ class Card_Serializer_for_task(serializers.ModelSerializer):
     lid=ListSimpleSerializer()
     class Meta:
         model=Card
-        fields=['lid']
+        fields=['lid',"card_name"]
 
 
 class CardSubtaskCreateSerializer(serializers.ModelSerializer):

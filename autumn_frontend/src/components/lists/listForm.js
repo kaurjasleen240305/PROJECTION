@@ -6,21 +6,26 @@ import { useForm, Controller,reset } from "react-hook-form";
 import Input from "@mui/material";
 import BackendClient from "../../back_client";
 import { closeListForm,openListForm } from "../../features/project_formSlice";
-import { addList } from "../../features/listSlice";
+import getLists from "../../requests/getlists";
 
 
 export default function ListForm(){
     const isOpen=useSelector((state)=>state.project_form.isListOpen)
     const dispatch=useDispatch()
     const pid=useSelector((state)=>state.project_Id.openedProjectId)
+    let getListReq=getLists()
     console.log(isOpen)
     const bigdiv={
-        width:"100vw",
-        height:"100vh",
-        alignItems:"center",
-        justifyContent:"center",
-        display:"flex",
-      }
+      position:"absolute",
+      zIndex:"20",
+      width:"100vw",
+      height:"100vh",
+      alignItems:"center",
+      justifyContent:"center",
+      display:"flex",
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background for blur effect
+      backdropFilter: 'blur(5px)', // Apply a blur effect to the background
+    }
       const underlined_input={
         border: 'none',
       //  borderBottom: "1px solid black",/* Color and style of the underline */
@@ -42,6 +47,7 @@ export default function ListForm(){
         borderRadius:"5px",
         backgroundColor:"lightgray"
       };
+
       const config = {
         headers: {
           'Content-Type': 'application/json', // Set the content type as needed
@@ -52,7 +58,8 @@ export default function ListForm(){
         console.log(data)
         BackendClient.post("lists/",data,config).then((res)=>{
             console.log(res.data)
-            dispatch(addList(res.data))
+            getListReq(dispatch,pid);
+            dispatch(closeListForm())
         })
     }
     const handleCloseList=()=>{

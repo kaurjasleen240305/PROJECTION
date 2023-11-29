@@ -346,15 +346,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ListViewSet(viewsets.ModelViewSet):
      queryset=List.objects.all()
      serializer_class=ListModelSerializer
-   #   authentication_classes=[SessionAuthentication]
-   #   permission_classes=[IsAuthenticated]
-     #def get_permission(self):
-     #   if self.action in ['create','destroy','update']:
-     #      obj=self.get_object()
-     #      permission_classes=[is_member_admin_creator,IsAuthenticated]
-     #   else:
-     #      permission_classes=[IsAuthenticated]
-     #   return permission_classes
 
      def getlist_by_pid(self,request,pid):
         req_lists=List.objects.filter(pid=pid)
