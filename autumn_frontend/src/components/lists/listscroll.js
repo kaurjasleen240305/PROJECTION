@@ -81,7 +81,7 @@ export default function ListScroll(){
     }
    return(
     <>
-     <div style={{marginTop:"0px",marginBottom:"30px",marginLeft:"60px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+     <div style={{marginTop:"0px",paddingRight:"50px",marginBottom:"30px",marginLeft:"60px",display:"flex",justifyContent:"space-between",alignItems:"center",width:"100vw"}}>
         {/* to add project logo  */}
         <h1 style={shadow}>Welcome To {(project_opened.project_name)} !!</h1>
         <Button variant="contained" sx={{height:"40px"}} color="primary" startIcon={<PeopleIcon/>} onClick={show_mem}>SEE MEMBERS</Button>
@@ -100,7 +100,7 @@ export default function ListScroll(){
         <Button variant="contained" color="primary" sx={{width:"200px",marginLeft:"50px",marginBottom:"30px",}} onClick={()=>handleAddCard(item.pk)}>ADD CARD</Button>
        </div>
     ))}
-    <div style={{paddingRight:"50px",paddingLeft:"20px", height:"50px",backgroundColor:"gray",borderRadius:"8px",display:"flex",alignItems:"center",marginRight:"20px"}}>
+    <div style={{marginLeft:"50px",paddingRight:"50px",paddingLeft:"20px", height:"50px",backgroundColor:"gray",borderRadius:"8px",display:"flex",alignItems:"center",marginRight:"20px"}}>
        <AddIcon sx={{alignSelf:"center",backgroundColor:"lightgray",borderRadius:"12px",cursor: 'pointer',marginRight:"20px",marginLeft:"5px"}} onClick={handleListClick}/>
        <h3 sx={{color:"white"}}>ADD LIST</h3>
      </div>

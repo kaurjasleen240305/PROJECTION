@@ -23,12 +23,12 @@ export default function Card_Form(){
     let getProject=getproject_info()
     
 
-    const onSubmit = (data) => {
+    const onSubmit = async(data) => {
         console.log(data)
         data['lid']=lid;
-        addCardreq(dispatch,data);
-        dispatch(closeCardForm())
-        getListsreq(dispatch,project.pk)
+        await addCardreq(dispatch,data);
+        await dispatch(closeCardForm())
+        await getListsreq(dispatch,project.pk)
     };
 
     let handleCloseBig=()=>{
