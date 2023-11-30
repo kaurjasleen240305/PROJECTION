@@ -13,14 +13,6 @@ var config={
 
 const getCard=()=>{
     return async(dispatch,cid)=>{
-        // await axios.get(`http://127.0.0.1:8000/web_api/cards/${cid}`, config['headers']).then((res)=>{
-        //     console.log(res.data)
-        //     return res.data;
-        // })
-        // .then((data)=>{
-        //     dispatch(setcarddata(data))
-        //     console.log(data)
-        // })
         
         await BackendClient.get(`cards/${cid}/`).then((res)=>{
             return res.data;

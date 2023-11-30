@@ -253,13 +253,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
       serializer=ProjectModelSerializer(projects,many=True)
       return Response(serializer.data)
    
-   def retrieve(self,request,pk):
-      try:
-         project = Project.objects.get(pk=pk)
-      except project.DoesNotExist:
-         return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
-      serializer = ProjectModelSerializer(project)
-      return Response(serializer.data)
+   # def retrieve(self,request,pk):
+   #    try:
+   #       project = Project.objects.get(pk=pk)
+   #    except project.DoesNotExist:
+   #       return Response({'error': 'Project not found'}, status=status.HTTP_404_NOT_FOUND)
+   #    serializer = ProjectModelSerializer(project)
+   #    return Response(serializer.data)
    
    
    def create(self,request,*args,**kwargs):
@@ -280,8 +280,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
    def destroy(self,request,*args,**kwargs):
       ins=self.get_object()
       print(ins)
-      cond1=request.session.get("is_superuser")
-      cond2=(ins.creator==(request.session.get("username")))
+      current_user=User.objects.get(username=(request.session.get("username")))
+      cond1=current_user.is_superuser
+      cond2=(ins.creator.username==(request.session.get("username")))
       cond3=ins.is_member(username=request.session.get("username"))
       if(cond1 or cond3 or cond2):
          ins.delete()
@@ -291,8 +292,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
    @action(detail=True,methods=["POST",])
    def add_member(self,request,*args,**kwargs):
       project_instance=self.get_object()
-      current_user=User.objects.get(username=request.session.get("username"))
-      cond1=current_user.is_superuser
       print(project_instance.creator)
       print("hello")
       username=request.data['username']
@@ -303,7 +302,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
       # print("hello")
       print(request.session.get("username"))
       cond2=(project_instance.creator.username==(request.session.get("username")))
-      if(cond2 or cond1):
+      if(cond2):
          project_instance.project_members.add(user)
          return Response("DONE")
       return Response("NO ACCESS")
@@ -314,10 +313,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
       username=request.data['username']
       user=User.objects.get(username=username)
       cond2=(project_instance.creator.username==(request.session.get("username")))
-      current_user=User.objects.get(username=request.session.get("username"))
-      cond1=current_user.is_superuser
       print(cond2)
-      if(cond2 or cond1):
+      if(cond2):
          project_instance.project_members.remove(user)
          return Response("DONE")
       return Response("NO ACCESS")
