@@ -28,6 +28,7 @@ export default function ProjectForm(){
         BackendClient.post("projects/",data,config).then((res)=>{
             console.log(res.data)
             dispatch(addProject(res.data))
+            dispatch(closeForm())
         })
     }
     if (!isOpen) {
