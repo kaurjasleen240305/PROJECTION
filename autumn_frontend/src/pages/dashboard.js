@@ -33,7 +33,7 @@ export default function Dashboard(){
         // getallUsers_req(dispatch);
     },[dispatch]);
     return (
-      <div sx={{position:"relative"}}>
+      <div style={{display:"flex",flexDirection:"column",height:"100vh",alignItems:"center"}}>
         <PageDrawer sx={{position:"absolute"}} component={DashProjects}/>
         <ProjectForm sx={{position:"absolute",zIndex:"20"}}/>
         <ProfileImage sx={{position:"absolute",zIndex:"21"}}/>

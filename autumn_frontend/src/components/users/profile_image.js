@@ -22,7 +22,7 @@ export default function ProfileImage(){
 
     const bigdiv={
         position:"absolute",
-        zIndex:"20",
+        zIndex:"22",
         width:"100vw",
         height:"100vh",
         alignItems:"center",
@@ -38,7 +38,7 @@ export default function ProfileImage(){
     return(
         <div style={bigdiv}>
             <div style={{display:"flex",flexDirection:"column"}}>
-              <ClearIcon onClick={()=>{dispatch(closeProfileImage())}}/>
+              <ClearIcon onClick={()=>{dispatch(closeProfileImage())}} sx={{color:"white"}}/>
               <Avatar src={profile_image} sx={{ width: "30vw", height: "50vh"}}/>
             </div>
         </div>
