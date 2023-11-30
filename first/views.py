@@ -15,8 +15,6 @@ from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
 from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer,CardSubtask_Take_Serializer
 from rest_framework import viewsets,status,permissions
-# from django_elasticsearch_dsl_drf.viewsets import ElasticsearchModelViewSet
-# from .documents import ProjectDocument
 load_dotenv()
 
 
@@ -293,6 +291,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
    @action(detail=True,methods=["POST",])
    def add_member(self,request,*args,**kwargs):
       project_instance=self.get_object()
+      current_user=User.objects.get(username=request.session.get("username"))
+      cond1=current_user.is_superuser
       print(project_instance.creator)
       print("hello")
       username=request.data['username']
@@ -303,7 +303,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
       # print("hello")
       print(request.session.get("username"))
       cond2=(project_instance.creator.username==(request.session.get("username")))
-      if(cond2):
+      if(cond2 or cond1):
          project_instance.project_members.add(user)
          return Response("DONE")
       return Response("NO ACCESS")
@@ -314,8 +314,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
       username=request.data['username']
       user=User.objects.get(username=username)
       cond2=(project_instance.creator.username==(request.session.get("username")))
+      current_user=User.objects.get(username=request.session.get("username"))
+      cond1=current_user.is_superuser
       print(cond2)
-      if(cond2):
+      if(cond2 or cond1):
          project_instance.project_members.remove(user)
          return Response("DONE")
       return Response("NO ACCESS")
@@ -360,13 +362,13 @@ class ListViewSet(viewsets.ModelViewSet):
        cond3=current_project.creator==(request.session.get("username"))
        print(request.session.get("username"))
        result=(cond1 or cond2 or cond3)
-      #  if(result):
-       serializer=ListCreateSerializer(data=request.data)
-       if serializer.is_valid():
+       if(result):
+        serializer=ListCreateSerializer(data=request.data)
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-       return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-      #  return Response({"error":"YOU DONT HAVE ACCESS TO CREATE PROJECT"})
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+       return Response({"error":"YOU DONT HAVE ACCESS TO CREATE LIST"})
      
 
 
