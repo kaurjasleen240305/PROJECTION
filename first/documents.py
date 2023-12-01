@@ -7,27 +7,9 @@ from elasticsearch import Elasticsearch
 
 
 
-@registry.register_document
-class UserDocument(Document):
-    # project_name = Text()
-    class Index:
-        # Name of the Elasticsearch index
-        name = 'users'
-        # See Elasticsearch Indices API reference for available settings
-        settings = {'number_of_shards': 1,
-                    'number_of_replicas': 0}
-
-    class Django:
-        model = User # The model associated with this Document
-        fields=['username']
-        pk_field = 'username'
-
 
 @registry.register_document
 class ProjectDocument(Document):
-    # project_name = Text()
-    project_members=fields.Nested(UserDocument)
-    creator=fields.Nested(UserDocument)
     class Index:
         # Name of the Elasticsearch index
         name = 'projects'
@@ -52,10 +34,13 @@ class CardDocument(Document):
 
     class Django:
         model = Card # The model associated with this Document
+        fields=['card_name']
+
+
 
 @registry.register_document
 class ListDocument(Document):
-    cards=fields.Nested(CardDocument)
+    pid=fields.KeywordField(attr='pid')
     class Index:
         # Name of the Elasticsearch index
         name = 'lists'
