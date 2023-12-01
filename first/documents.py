@@ -41,21 +41,6 @@ class ProjectDocument(Document):
 
 
 @registry.register_document
-class ListDocument(Document):
-    class Index:
-        # Name of the Elasticsearch index
-        name = 'lists'
-        # See Elasticsearch Indices API reference for available settings
-        settings = {'number_of_shards': 1,
-                    'number_of_replicas': 0}
-
-    class Django:
-        model = List # The model associated with this Document
-        fields=['pk','list_name']
-
-
-
-@registry.register_document
 class CardDocument(Document):
     # project_name = Text()
     # lid= fields.IntegerField()
@@ -67,3 +52,20 @@ class CardDocument(Document):
 
     class Django:
         model = Card # The model associated with this Document
+
+@registry.register_document
+class ListDocument(Document):
+    cards=fields.Nested(CardDocument)
+    class Index:
+        # Name of the Elasticsearch index
+        name = 'lists'
+        # See Elasticsearch Indices API reference for available settings
+        settings = {'number_of_shards': 1,
+                    'number_of_replicas': 0}
+
+    class Django:
+        model = List
+        fields=['list_name']
+
+
+

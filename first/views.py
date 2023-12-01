@@ -126,6 +126,7 @@ def get_token(request):
          return Response("unable to create user")
       try:
        # if(user.is_active):
+       if(user.is_active):
          login(request,user)
          request.session['username'] = username
          request.session['name'] = name
@@ -136,6 +137,8 @@ def get_token(request):
          request.session['is_admin']=user.is_superuser
          print(FRONTEND_HOST)
          return redirect(f'{FRONTEND_HOST}dashboard')
+       else:
+         return redirect(f'{FRONTEND_HOST}login')
         
        # return redirect(f'{FRONTEND_HOST}login')
   #      return Response("LOGGED IN")
