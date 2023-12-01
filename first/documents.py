@@ -40,7 +40,9 @@ class CardDocument(Document):
 
 @registry.register_document
 class ListDocument(Document):
-    pid=fields.KeywordField(attr='pid')
+    pid=fields.ObjectField(properties={
+        'pk':fields.IntegerField(),
+    })
     class Index:
         # Name of the Elasticsearch index
         name = 'lists'
@@ -51,6 +53,5 @@ class ListDocument(Document):
     class Django:
         model = List
         fields=['list_name']
-
 
 
