@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.authentication import SessionAuthentication
 from .serializers import ProjectModelSerializer,ProjectListModelSerializer,Card_subtaskSerializer,CombinedSerializer,CardSerializer,UserSerializer,UserPartialUpdateSerializer,Procreser,ListModelSerializer,ListCreateSerializer,Card_createSerializer,UserInfoSerializer,CommentCreateSerializer,CommentSendSerializer,CardSubtaskCreateSerializer,ProjectMembersSerializer,CardSubtask_Take_Serializer
 from rest_framework import viewsets,status,permissions
+from django_elasticsearch_dsl import search
 load_dotenv()
 
 
@@ -370,6 +371,19 @@ class ListViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
        return Response({"error":"YOU DONT HAVE ACCESS TO CREATE LIST"})
      
+     @action(detail=True,methods=["GET",])
+     def search_lists(self,request,*args,**kwargs):
+       list_name = request.query_params.get('list_name', '')
+       pid = request.query_params.get('pid', '')
+       s = search.Search(index='lists').query('match', list_name=list_name).filter('term', pid__pk=pid)
+       response=s.execute()
+       document_ids = [hit.meta.id for hit in response.hits]
+       queryset = List.objects.filter(pk__in=document_ids)
+       serializer =ListModelSerializer(queryset, many=True)
+       return Response(serializer.data)
+
+     
+     
 
 
 class CardViewSet(viewsets.ModelViewSet):
@@ -507,61 +521,5 @@ class CardSubtaskViewSet(viewsets.ModelViewSet):
       cards=Card_Subtask.objects.filter(assignees=current_user)
       serializer=Card_subtaskSerializer(cards,many=True)
       return Response(serializer.data)
-
-
-# class ProjectViewSet(ElasticsearchModelViewSet):
-#     document = ProjectDocument
-#     serializer_class = ProjectListModelSerializer
-   
-   
-
-      
-   
-      
-
-      
-
-
-
-   
-   
-          
-
-   
-   
-     
-    
-     
-     
-
-      
-     
-     
-
-
-
-
-
-
-
-
-
-   
-   
-            
-
-
-      
-
-
-        
-        
-     
-
-     
-        
-            
-        
-
 
 

@@ -31,6 +31,7 @@ urlpatterns = [
     path('projects/get_members/<int:pk>',views.ProjectViewSet.as_view({"get":"get_members"},name="get_members")),
     path('projects/get_non_members/<int:pk>',views.ProjectViewSet.as_view({"get":"get_non_members"},name="get_non_members")),
     path("cards/dash_cards",views.CardViewSet.as_view({"get":"dash_cards"},name="dash_cards")),
+    path("lists/search",views.ListViewSet.as_view({"get":"search_lists"},name="search_lists")),
     # path('search/<int:pid>',)
 ]
 
