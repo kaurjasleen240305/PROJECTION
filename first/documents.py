@@ -24,8 +24,12 @@ class ProjectDocument(Document):
 
 @registry.register_document
 class CardDocument(Document):
-    # project_name = Text()
-    # lid= fields.IntegerField()
+    lid=fields.ObjectField(properties={
+        'pk':fields.IntegerField(),
+        'pid':fields.ObjectField(properties={
+        'pk':fields.IntegerField(),
+    })
+    })
     class Index:
         name = 'cards'
         # See Elasticsearch Indices API reference for available settings

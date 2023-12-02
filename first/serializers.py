@@ -101,11 +101,16 @@ class ListModelSerializer(serializers.ModelSerializer):
         fields = ['pk','list_name','pid','cards'] 
         read_only_fields=['cards']
 
+class List_Card_Search_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = List
+        fields = ['pk','list_name'] 
+
 
 class ListCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model=List
-        fields=['list_name','pid']
+        fields=['list_name','pid','pk']
 
 
 

@@ -381,10 +381,25 @@ class ListViewSet(viewsets.ModelViewSet):
        queryset = List.objects.filter(pk__in=document_ids)
        serializer =ListModelSerializer(queryset, many=True)
        return Response(serializer.data)
-
      
-     
+     @action(detail=True,methods=["GET",])
+     def search_cards(self,request,*args,**kwargs):
+        card_name=request.query_params.get("card_name"," ")
+        pid=request.query_params.get("pid"," ")
+        s = search.Search(index='cards').query('match', card_name=card_name).filter('term', lid__pid__pk=pid)
+        response = s.execute()
+        card_document_ids = [hit.meta.id for hit in response.hits]
+        print(card_document_ids)
+        queryset = List.objects.filter(cards__id__in=card_document_ids).distinct()
+        serializer = ListModelSerializer(queryset, many=True)
+        for list_data in serializer.data:
+            list_data['cards'] = [
+                card_data for card_data in list_data['cards']
+                if card_data['card_name'] == card_name
+            ]
 
+        return Response(serializer.data)
+      
 
 class CardViewSet(viewsets.ModelViewSet):
    queryset=Card.objects.all()
