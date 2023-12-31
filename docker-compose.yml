@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+
+ backend:
+  build:
+   ./autumn_backend
+  command:
+   sh run.sh
+  expose:
+   - 8000
+  volumes:
+   - ./autumn_backend/db.sqlite3:/app/db.sqlite3  
+
+ frontend:
+  build: ./autumn_frontend
+  command: sh run.sh
+  depends_on:
+    - backend
+  expose:
+    - 3000
+
+ nginx:
+  build:
+   ./nginx
+  links:
+   - frontend
+   - backend
+  depends_on:
+   - frontend
+   - backend
+  ports:
+   - "8081:80"
+
+
+volumes:
+  db_data: {} 
