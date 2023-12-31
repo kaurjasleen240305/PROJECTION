@@ -13,8 +13,9 @@ services:
    - ./autumn_backend/db.sqlite3:/app/db.sqlite3  
 
  frontend:
-  build: ./autumn_frontend
-  command: sh run.sh
+  build: 
+   context: ./autumn_frontend
+   dockerfile: Dockerfile.dev
   depends_on:
     - backend
   expose:
